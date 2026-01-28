@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './relatorios.module.css'
-import { Download, Users, BarChart2, Heart, Activity, Zap } from 'lucide-react'
+import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
+import * as XLSX from 'xlsx'
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {

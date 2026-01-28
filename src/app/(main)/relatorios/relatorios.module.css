@@ -65,6 +65,28 @@
     /* Datepicker container is order 1 by default */
 }
 
+.exportActions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .exportActions {
+        width: 100%;
+        order: 2;
+        display: flex;
+        gap: 10px;
+        /* Keep side by side or column? Side by side fits properly usually */
+    }
+
+    .exportButton {
+        flex: 1;
+        /* Distribute space */
+        justify-content: center;
+    }
+}
+
 .kpiGrid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
