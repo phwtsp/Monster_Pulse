@@ -69,7 +69,6 @@ export default function Sidebar() {
                 </div>
 
                 <div className={styles.navSection}>
-                    <div className={styles.navTitle}>Navegação</div>
                     <nav className={styles.nav}>
                         {menuItems.map((item) => {
                             const Icon = item.icon

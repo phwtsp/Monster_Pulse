@@ -20,9 +20,16 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
+    const [filteredData, setFilteredData] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
-    // KPIs
+    // Date Filter State
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+    const [minDate, setMinDate] = useState('')
+    const [maxDate, setMaxDate] = useState('')
+
+    // KPIs inputs ...
 
     const [total, setTotal] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
@@ -35,6 +42,10 @@ export default function RelatoriosPage() {
     useEffect(() => {
         fetchData()
     }, [])
+
+    useEffect(() => {
+        filterData()
+    }, [startDate, endDate, data])
 
     const fetchData = async () => {
         setLoading(true)
@@ -49,11 +60,41 @@ export default function RelatoriosPage() {
             return
         }
 
-        if (surveys) {
+        if (surveys && surveys.length > 0) {
             setData(surveys)
-            calculateMetrics(surveys)
+
+            // Set limits
+            const dates = surveys.map(s => new Date(s.created_at).toISOString().split('T')[0])
+            dates.sort()
+            setMinDate(dates[0])
+            setMaxDate(dates[dates.length - 1])
+
+            // Default: All range
+            if (!startDate) setStartDate(dates[0])
+            if (!endDate) setEndDate(dates[dates.length - 1])
         }
         setLoading(false)
+    }
+
+    const filterData = () => {
+        if (!data.length) return
+
+        let filtered = data
+
+        if (startDate && endDate) {
+            const start = new Date(startDate)
+            start.setHours(0, 0, 0, 0)
+            const end = new Date(endDate)
+            end.setHours(23, 59, 59, 999)
+
+            filtered = data.filter(item => {
+                const itemDate = new Date(item.created_at)
+                return itemDate >= start && itemDate <= end
+            })
+        }
+
+        setFilteredData(filtered)
+        calculateMetrics(filtered)
     }
 
     const calculateMetrics = (surveys: any[]) => {
@@ -128,7 +169,7 @@ export default function RelatoriosPage() {
         // Strict Format
         const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Jogos por Dia', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
-        const rows = data.map(row => {
+        const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
             const dateStr = dateObj.toLocaleDateString('pt-BR')
             const timeStr = dateObj.toLocaleTimeString('pt-BR')
@@ -183,6 +224,27 @@ export default function RelatoriosPage() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Relatórios</h1>
+
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <input
+                        type="date"
+                        value={startDate}
+                        min={minDate}
+                        max={maxDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #333', background: '#000', color: '#fff' }}
+                    />
+                    <span style={{ color: '#fff' }}>até</span>
+                    <input
+                        type="date"
+                        value={endDate}
+                        min={minDate}
+                        max={maxDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #333', background: '#000', color: '#fff' }}
+                    />
+                </div>
+
                 <button onClick={downloadCSV} className={styles.exportButton}>
                     <Download size={18} />
                     Exportar Excel
@@ -323,7 +385,7 @@ export default function RelatoriosPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {data.map((row) => (
+                            {filteredData.map((row) => (
                                 <tr key={row.id}>
                                     <td>{new Date(row.created_at).toLocaleString('pt-BR')}</td>
                                     <td>{row.age}</td>
@@ -339,7 +401,7 @@ export default function RelatoriosPage() {
                     </table>
                 </div>
                 <div className={styles.tableFooter}>
-                    E mais {data.length > 10 ? data.length - 10 : 0} cadastros...
+                    E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} cadastros...
                 </div>
             </div>
 

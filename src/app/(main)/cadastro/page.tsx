@@ -241,6 +241,12 @@ export default function CadastroPage() {
                             placeholder="Ex: Red Bull, TNT Energy..."
                             value={newBrand}
                             onChange={e => setNewBrand(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                    e.preventDefault()
+                                    addOtherBrand()
+                                }
+                            }}
                             className={styles.input}
                         />
                         <button type="button" onClick={addOtherBrand} className={styles.addButton}>
