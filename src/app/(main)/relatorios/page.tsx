@@ -6,6 +6,18 @@ import styles from './relatorios.module.css'
 import { Download, Users, BarChart2, Heart, Activity, Zap } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 
+const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length) {
+        return (
+            <div style={{ backgroundColor: '#000', border: '1px solid #333', padding: '10px', borderRadius: '4px' }}>
+                <p style={{ color: '#fff', marginBottom: 0 }}>{`${payload[0].name}`}</p>
+                <p style={{ color: '#97d700', fontWeight: 'bold' }}>{`${payload[0].value} votos`}</p>
+            </div>
+        )
+    }
+    return null
+}
+
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
@@ -229,7 +241,7 @@ export default function RelatoriosPage() {
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>
-                                <Tooltip contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }} />
+                                <Tooltip content={<CustomTooltip />} />
                             </PieChart>
                         </ResponsiveContainer>
                     </div>
