@@ -1,0 +1,223 @@
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-bottom: 4rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.section {
+    background-color: #0D1117;
+    /* Dark card background */
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #30363D;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #30363D;
+    padding-bottom: 1rem;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.helperText {
+    color: #8B949E;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.row {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 200px;
+}
+
+.label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #C9D1D9;
+}
+
+.input {
+    background-color: #161B22;
+    border: 1px solid #30363D;
+    padding: 0.8rem;
+    color: #fff;
+    border-radius: 6px;
+    width: 100%;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--monster-green);
+}
+
+/* Radio Buttons Styling */
+.radiosContainer {
+    display: flex;
+    gap: 1rem;
+}
+
+.hiddenRadio,
+.hiddenCheckbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.radioBox {
+    background-color: #161B22;
+    border: 1px solid #30363D;
+    padding: 0.8rem 1.5rem;
+    border-radius: 6px;
+    color: #C9D1D9;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    text-align: center;
+    flex: 1;
+}
+
+.activeRadio {
+    border-color: var(--monster-green);
+    color: #fff;
+    background-color: rgba(151, 215, 0, 0.05);
+}
+
+/* Flavor Groups */
+.flavorGroupsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.flavorGroup h3 {
+    color: var(--monster-green);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+.checkboxGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    /* Wider for full phrases */
+    gap: 1rem;
+}
+
+.checkboxBox {
+    background-color: #161B22;
+    border: 1px solid #30363D;
+    padding: 1rem;
+    border-radius: 6px;
+    color: #C9D1D9;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.checkboxBox:before {
+    content: '';
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #555;
+    border-radius: 4px;
+    margin-right: 12px;
+    transition: all 0.2s;
+}
+
+.activeCheckbox {
+    border-color: var(--monster-green);
+    color: #fff;
+    background-color: rgba(151, 215, 0, 0.05);
+}
+
+.activeCheckbox:before {
+    background-color: var(--monster-green);
+    border-color: var(--monster-green);
+    box-shadow: inset 0 0 0 3px #161B22;
+    /* Checkmark simulation */
+}
+
+/* Add Button Logic */
+.addBrandRow {
+    display: flex;
+    gap: 1rem;
+}
+
+.addButton {
+    background-color: var(--monster-green);
+    color: #000;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    padding: 0 1.5rem;
+    cursor: pointer;
+}
+
+.addButton:hover {
+    filter: brightness(1.1);
+}
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.tag {
+    background-color: #30363D;
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+.submitButton {
+    background-color: var(--monster-green);
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 800;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-transform: uppercase;
+    margin-top: 1rem;
+    width: 100%;
+    max-width: 300px;
+    align-self: flex-end;
+    /* Or center? Reference has centered big button */
+    align-self: center;
+}
+
+.submitButton:hover {
+    box-shadow: 0 0 15px rgba(151, 215, 0, 0.4);
+}

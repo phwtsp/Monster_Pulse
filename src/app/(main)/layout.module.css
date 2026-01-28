@@ -1,0 +1,16 @@
+.mainContent {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: var(--monster-black);
+}
+
+@media (max-width: 768px) {
+    .mainContent {
+        margin-left: 0;
+        width: 100%;
+        padding-bottom: 80px;
+        /* Space for bottom nav if we switch to it on mobile, or just extra padding */
+    }
+}

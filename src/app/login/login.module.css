@@ -1,0 +1,175 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background-color: #0D1117;
+}
+
+.centeredContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.logoHeader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+}
+
+.iconCircle {
+    width: 60px;
+    height: 60px;
+    background-color: var(--monster-green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 20px rgba(151, 215, 0, 0.4);
+}
+
+.brandName {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 0.2rem;
+}
+
+.brandSubtitle {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.card {
+    background-color: #0D1117;
+    /* Dark matching background */
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    border: 1px solid #333;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputIcon {
+    position: absolute;
+    left: 12px;
+    color: #666;
+}
+
+.input {
+    width: 100%;
+    padding: 0.9rem 0.9rem 0.9rem 2.8rem;
+    background-color: #161B22;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    color: #fff;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s;
+}
+
+.input:focus {
+    border-color: var(--monster-green);
+    box-shadow: 0 0 0 2px rgba(151, 215, 0, 0.1);
+}
+
+.button {
+    width: 100%;
+    padding: 0.9rem;
+    background-color: var(--monster-green);
+    color: #000;
+    font-weight: 700;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(151, 215, 0, 0.2);
+}
+
+.button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
+
+.button:active {
+    transform: translateY(0);
+}
+
+.error {
+    color: #ff4444;
+    font-size: 0.85rem;
+    text-align: center;
+    background-color: rgba(255, 68, 68, 0.1);
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.footerText {
+    text-align: center;
+    color: #666;
+    font-size: 0.8rem;
+}
+
+.success {
+    text-align: center;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.iconCircleSuccess {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(151, 215, 0, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.successTitle {
+    color: var(--monster-green);
+}
+
+.linkButton {
+    background: none;
+    border: none;
+    color: #666;
+    text-decoration: underline;
+    cursor: pointer;
+    margin-top: 1rem;
+}
