@@ -1,0 +1,71 @@
+/* Monster Theme for React Datepicker */
+
+.monster-datepicker {
+    font-family: var(--font-family) !important;
+    background-color: #0D1117 !important;
+    border: 1px solid #30363D !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.monster-datepicker .react-datepicker__header {
+    background-color: #161B22 !important;
+    border-bottom: 1px solid #30363D !important;
+}
+
+.monster-datepicker .react-datepicker__current-month,
+.monster-datepicker .react-datepicker-time__header,
+.monster-datepicker .react-datepicker-year-header {
+    color: #fff !important;
+    font-weight: 700 !important;
+}
+
+.monster-datepicker .react-datepicker__day-name {
+    color: #888 !important;
+}
+
+.monster-datepicker .react-datepicker__day {
+    color: #fff !important;
+}
+
+.monster-datepicker .react-datepicker__day:hover {
+    background-color: #333 !important;
+    border-radius: 50%;
+}
+
+/* Selected Range */
+.monster-datepicker .react-datepicker__day--selected,
+.monster-datepicker .react-datepicker__day--in-selecting-range,
+.monster-datepicker .react-datepicker__day--in-range {
+    background-color: #97d700 !important;
+    color: #000 !important;
+    border-radius: 0;
+}
+
+.monster-datepicker .react-datepicker__day--range-start,
+.monster-datepicker .react-datepicker__day--range-end {
+    background-color: #97d700 !important;
+    color: #000 !important;
+    border-radius: 50% !important;
+    font-weight: bold;
+}
+
+.monster-datepicker .react-datepicker__day--in-range:not(.react-datepicker__day--range-start):not(.react-datepicker__day--range-end) {
+    background-color: rgba(151, 215, 0, 0.2) !important;
+    color: #fff !important;
+}
+
+.monster-datepicker .react-datepicker__triangle {
+    display: none;
+}
+
+.monster-datepicker .react-datepicker__day--disabled {
+    color: #333 !important;
+}
+
+/* Arrows */
+.monster-datepicker .react-datepicker__navigation-icon::before {
+    border-color: #888 !important;
+}

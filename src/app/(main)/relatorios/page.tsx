@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import styles from './relatorios.module.css'
 import { Download, Users, BarChart2, Heart, Activity, Zap } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
+import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -24,13 +25,12 @@ export default function RelatoriosPage() {
     const [loading, setLoading] = useState(true)
 
     // Date Filter State
-    const [startDate, setStartDate] = useState('')
-    const [endDate, setEndDate] = useState('')
-    const [minDate, setMinDate] = useState('')
-    const [maxDate, setMaxDate] = useState('')
+    const [startDate, setStartDate] = useState<Date | null>(null)
+    const [endDate, setEndDate] = useState<Date | null>(null)
+    const [minDate, setMinDate] = useState<Date | undefined>(undefined)
+    const [maxDate, setMaxDate] = useState<Date | undefined>(undefined)
 
-    // KPIs inputs ...
-
+    // KPIs State
     const [total, setTotal] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
@@ -64,14 +64,25 @@ export default function RelatoriosPage() {
             setData(surveys)
 
             // Set limits
-            const dates = surveys.map(s => new Date(s.created_at).toISOString().split('T')[0])
-            dates.sort()
-            setMinDate(dates[0])
-            setMaxDate(dates[dates.length - 1])
+            const dates = surveys.map(s => new Date(s.created_at))
+            dates.sort((a, b) => a.getTime() - b.getTime())
 
-            // Default: All range
-            if (!startDate) setStartDate(dates[0])
-            if (!endDate) setEndDate(dates[dates.length - 1])
+            if (dates.length > 0) {
+                const min = dates[0]
+                const max = dates[dates.length - 1]
+                setMinDate(min)
+                setMaxDate(max)
+
+                // Default: All range
+                setStartDate(min)
+                setEndDate(max)
+
+                // Initial filter will happen via useEffect
+            } else {
+                // Determine limits even if 1 item
+                setMinDate(dates[0])
+                setMaxDate(dates[0])
+            }
         }
         setLoading(false)
     }
@@ -98,7 +109,6 @@ export default function RelatoriosPage() {
     }
 
     const calculateMetrics = (surveys: any[]) => {
-        // ... (Existing metrics logic: Total, Avg Age, Top Flavor, Pie, Gender, Age) ...
         // 1. Total
         setTotal(surveys.length)
 
@@ -225,30 +235,23 @@ export default function RelatoriosPage() {
             <div className={styles.header}>
                 <h1 className={styles.title}>Relatórios</h1>
 
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                    <input
-                        type="date"
-                        value={startDate}
-                        min={minDate}
-                        max={maxDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #333', background: '#000', color: '#fff' }}
+                <div className={styles.toolbar}>
+                    <DateRangePicker
+                        startDate={startDate}
+                        endDate={endDate}
+                        onChange={(update) => {
+                            setStartDate(update[0]);
+                            setEndDate(update[1]);
+                        }}
+                        minDate={minDate}
+                        maxDate={maxDate}
                     />
-                    <span style={{ color: '#fff' }}>até</span>
-                    <input
-                        type="date"
-                        value={endDate}
-                        min={minDate}
-                        max={maxDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        style={{ padding: '8px', borderRadius: '4px', border: '1px solid #333', background: '#000', color: '#fff' }}
-                    />
-                </div>
 
-                <button onClick={downloadCSV} className={styles.exportButton}>
-                    <Download size={18} />
-                    Exportar Excel
-                </button>
+                    <button onClick={downloadCSV} className={styles.exportButton}>
+                        <Download size={18} />
+                        Exportar Excel
+                    </button>
+                </div>
             </div>
 
             {/* KPI Cards */}

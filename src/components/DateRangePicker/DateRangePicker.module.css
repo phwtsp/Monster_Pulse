@@ -1,0 +1,53 @@
+/* DatePickerWrapper.module.css */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: 0.85rem;
+    color: #888;
+    font-weight: 500;
+}
+
+.inputWrapper {
+    position: relative;
+    background-color: #0D1117;
+    border: 1px solid #30363D;
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    min-width: 260px;
+    transition: all 0.2s;
+}
+
+.inputWrapper:hover {
+    border-color: #555;
+}
+
+.icon {
+    color: #666;
+}
+
+.text {
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Overriding React Datepicker - Monster Theme */
+.datepickerPopper {
+    z-index: 999 !important;
+}
+
+/* Global overrides for react-datepicker need to be targeted carefully or global, 
+   but we can try to scope them via the portal or class names if possible. 
+   React-datepicker styles are usually global. We will assume standard import in component 
+   and use :global or standard css. 
+   Since this is a module, I'll provide a global style block inside the component or use global css.
+   Actually, let's put the specific monster theme overrides in global.css or here using :global 
+*/
