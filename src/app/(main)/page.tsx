@@ -8,9 +8,11 @@ export default function Home() {
   return (
     <div className={styles.landingContainer}>
       <div className={styles.logoArea}>
-        {/* Using Lucide icon as placeholder for Monster Logo to look "premium" */}
-        <Zap size={100} color="#97d700" fill="#97d700" className={styles.glow} />
-        <h1 className={styles.brandTitle}>MONSTER<br />ENERGY</h1>
+        <img
+          src="/monster-logo-home.png"
+          alt="Monster Energy"
+          className={styles.logoImage}
+        />
       </div>
 
       <div className={styles.actionButtons}>
