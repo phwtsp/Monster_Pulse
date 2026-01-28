@@ -85,13 +85,10 @@ export default function CadastroPage() {
 
     const [hoveredFlavor, setHoveredFlavor] = useState<string | null>(null)
 
-    // Exclude flavors without images if necessary
-    const MISSING_IMAGES = ['Monster Rio Punch Juice']
-
     const handleInteractionStart = (flavor: string) => {
-        if (!MISSING_IMAGES.includes(flavor)) {
-            setHoveredFlavor(flavor)
-        }
+        // Don't show if already selected
+        if (preferencesMonster.includes(flavor)) return
+        setHoveredFlavor(flavor)
     }
 
     const handleInteractionEnd = () => {
@@ -99,8 +96,6 @@ export default function CadastroPage() {
     }
 
     const getImageUrl = (flavor: string) => {
-        // Handle special characters for URL if needed, but normally modern browsers handle it.
-        // We might need to ensure the filename matches exactly.
         return `/latas/${flavor}.png`
     }
 
@@ -207,7 +202,10 @@ export default function CadastroPage() {
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
-                                            onChange={() => togglePreference(setPreferencesMonster, preferencesMonster, flavor)}
+                                            onChange={() => {
+                                                togglePreference(setPreferencesMonster, preferencesMonster, flavor)
+                                                setHoveredFlavor(null)
+                                            }}
                                             className={styles.hiddenCheckbox}
                                         />
                                         {flavor}
@@ -231,7 +229,10 @@ export default function CadastroPage() {
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
-                                            onChange={() => togglePreference(setPreferencesMonster, preferencesMonster, flavor)}
+                                            onChange={() => {
+                                                togglePreference(setPreferencesMonster, preferencesMonster, flavor)
+                                                setHoveredFlavor(null)
+                                            }}
                                             className={styles.hiddenCheckbox}
                                         />
                                         {flavor}
@@ -255,7 +256,10 @@ export default function CadastroPage() {
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
-                                            onChange={() => togglePreference(setPreferencesMonster, preferencesMonster, flavor)}
+                                            onChange={() => {
+                                                togglePreference(setPreferencesMonster, preferencesMonster, flavor)
+                                                setHoveredFlavor(null)
+                                            }}
                                             className={styles.hiddenCheckbox}
                                         />
                                         {flavor}
@@ -279,7 +283,10 @@ export default function CadastroPage() {
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
-                                            onChange={() => togglePreference(setPreferencesMonster, preferencesMonster, flavor)}
+                                            onChange={() => {
+                                                togglePreference(setPreferencesMonster, preferencesMonster, flavor)
+                                                setHoveredFlavor(null)
+                                            }}
                                             className={styles.hiddenCheckbox}
                                         />
                                         {flavor}
