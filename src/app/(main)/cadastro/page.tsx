@@ -83,9 +83,42 @@ export default function CadastroPage() {
         setLoading(false)
     }
 
+    const [hoveredFlavor, setHoveredFlavor] = useState<string | null>(null)
+
+    // Exclude flavors without images if necessary
+    const MISSING_IMAGES = ['Monster Rio Punch Juice']
+
+    const handleInteractionStart = (flavor: string) => {
+        if (!MISSING_IMAGES.includes(flavor)) {
+            setHoveredFlavor(flavor)
+        }
+    }
+
+    const handleInteractionEnd = () => {
+        setHoveredFlavor(null)
+    }
+
+    const getImageUrl = (flavor: string) => {
+        // Handle special characters for URL if needed, but normally modern browsers handle it.
+        // We might need to ensure the filename matches exactly.
+        return `/latas/${flavor}.png`
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.bgImage} />
+
+            {/* Floating Can Display */}
+            {hoveredFlavor && (
+                <div className={styles.floatingCanContainer}>
+                    <img
+                        src={getImageUrl(hoveredFlavor)}
+                        alt={hoveredFlavor}
+                        className={styles.floatingCanImage}
+                    />
+                </div>
+            )}
+
             <h1 className={styles.title}>Ficha de Cadastro</h1>
             <form onSubmit={handleSubmit} className={styles.form}>
 
@@ -163,7 +196,14 @@ export default function CadastroPage() {
                             <h3>Linha Original e Zero</h3>
                             <div className={styles.checkboxGrid}>
                                 {FLAVORS.original.map(flavor => (
-                                    <label key={flavor} className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}>
+                                    <label
+                                        key={flavor}
+                                        className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}
+                                        onMouseEnter={() => handleInteractionStart(flavor)}
+                                        onMouseLeave={handleInteractionEnd}
+                                        onTouchStart={() => handleInteractionStart(flavor)}
+                                        onTouchEnd={handleInteractionEnd}
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
@@ -180,7 +220,14 @@ export default function CadastroPage() {
                             <h3>Linha Juice</h3>
                             <div className={styles.checkboxGrid}>
                                 {FLAVORS.juice.map(flavor => (
-                                    <label key={flavor} className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}>
+                                    <label
+                                        key={flavor}
+                                        className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}
+                                        onMouseEnter={() => handleInteractionStart(flavor)}
+                                        onMouseLeave={handleInteractionEnd}
+                                        onTouchStart={() => handleInteractionStart(flavor)}
+                                        onTouchEnd={handleInteractionEnd}
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
@@ -197,7 +244,14 @@ export default function CadastroPage() {
                             <h3>Linha Ultra (Zero Açúcar)</h3>
                             <div className={styles.checkboxGrid}>
                                 {FLAVORS.ultra.map(flavor => (
-                                    <label key={flavor} className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}>
+                                    <label
+                                        key={flavor}
+                                        className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}
+                                        onMouseEnter={() => handleInteractionStart(flavor)}
+                                        onMouseLeave={handleInteractionEnd}
+                                        onTouchStart={() => handleInteractionStart(flavor)}
+                                        onTouchEnd={handleInteractionEnd}
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
@@ -214,7 +268,14 @@ export default function CadastroPage() {
                             <h3>Linha Dragon Tea</h3>
                             <div className={styles.checkboxGrid}>
                                 {FLAVORS.dragon.map(flavor => (
-                                    <label key={flavor} className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}>
+                                    <label
+                                        key={flavor}
+                                        className={`${styles.checkboxBox} ${preferencesMonster.includes(flavor) ? styles.activeCheckbox : ''}`}
+                                        onMouseEnter={() => handleInteractionStart(flavor)}
+                                        onMouseLeave={handleInteractionEnd}
+                                        onTouchStart={() => handleInteractionStart(flavor)}
+                                        onTouchEnd={handleInteractionEnd}
+                                    >
                                         <input
                                             type="checkbox"
                                             checked={preferencesMonster.includes(flavor)}
@@ -278,6 +339,7 @@ export default function CadastroPage() {
                                     onChange={() => togglePreference(setMoments, moments, moment)}
                                     className={styles.hiddenCheckbox}
                                 />
+                                <span style={{ marginRight: '8px' }}>•</span>
                                 {moment}
                             </label>
                         ))}

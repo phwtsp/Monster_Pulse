@@ -243,6 +243,36 @@
     align-self: center;
 }
 
-.submitButton:hover {
-    box-shadow: 0 0 15px rgba(151, 215, 0, 0.4);
+box-shadow: 0 0 15px rgba(151, 215, 0, 0.4);
+}
+
+.floatingCanContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    filter: drop-shadow(0 0 20px rgba(151, 215, 0, 0.6));
+    animation: floatIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.floatingCanImage {
+    height: 60vh;
+    /* Big impact */
+    max-height: 500px;
+    width: auto;
+    object-fit: contain;
+}
+
+@keyframes floatIn {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -40%) scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
 }
