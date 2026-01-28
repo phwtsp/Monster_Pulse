@@ -56,11 +56,20 @@ export default function CadastroPage() {
         e.preventDefault()
         setLoading(true)
 
-        const { data: { user } } = await supabase.auth.getUser()
+        // Retrieve user from localStorage (Direct Bypass Login)
+        const storedUser = localStorage.getItem('monster_user')
+        const userEmail = storedUser ? JSON.parse(storedUser).email : null
+
+        if (!userEmail) {
+            alert('Erro: Usuário não identificado. Faça login novamente.')
+            setLoading(false)
+            return
+        }
+
         const otherBrandsString = otherBrandsList.join(', ')
 
         const { error } = await supabase.from('surveys').insert({
-            user_email: user?.email,
+            user_email: userEmail,
             age: parseInt(age),
             gender,
             preferences_monster: preferencesMonster,
