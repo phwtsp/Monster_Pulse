@@ -11,7 +11,7 @@ const CustomTooltip = ({ active, payload }: any) => {
         return (
             <div style={{ backgroundColor: '#000', border: '1px solid #333', padding: '10px', borderRadius: '4px' }}>
                 <p style={{ color: '#fff', marginBottom: 0 }}>{`${payload[0].name}`}</p>
-                <p style={{ color: '#97d700', fontWeight: 'bold' }}>{`${payload[0].value} votos`}</p>
+                <p style={{ color: '#97d700', fontWeight: 'bold' }}>{`${payload[0].value}`}</p>
             </div>
         )
     }
