@@ -7,6 +7,14 @@ import { ClipboardList, BarChart3, Zap } from 'lucide-react'
 export default function Home() {
   return (
     <div className={styles.landingContainer}>
+      <video
+        className={styles.bgVideo}
+        autoPlay
+        loop
+        muted
+        playsInline
+        src="https://www.callofduty.com/cod/cdn/bo7/BO7_IGS_CODHQ_BaseKA_1696x1056_02sk_CLEAN_Compressed.mp4"
+      />
       <div className={styles.logoArea}>
         <img
           src="/monster-logo-home.png"

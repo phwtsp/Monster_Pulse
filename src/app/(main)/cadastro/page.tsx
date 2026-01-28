@@ -85,7 +85,8 @@ export default function CadastroPage() {
 
     return (
         <div className={styles.container}>
-
+            <div className={styles.bgImage} />
+            <h1 className={styles.title}>Ficha de Cadastro</h1>
             <form onSubmit={handleSubmit} className={styles.form}>
 
                 {/* Section: Perfil */}

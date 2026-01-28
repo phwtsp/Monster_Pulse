@@ -163,7 +163,15 @@ export default function RelatoriosPage() {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', 'monster_pesquisa.csv')
+
+        // Date format DD-MM-YYYY
+        const now = new Date()
+        const day = String(now.getDate()).padStart(2, '0')
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const year = now.getFullYear()
+        const dateStr = `${day}-${month}-${year}`
+
+        link.setAttribute('download', `monster_pesquisa_${dateStr}.csv`)
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -175,7 +183,6 @@ export default function RelatoriosPage() {
         <div className={styles.container}>
             <div className={styles.header}>
                 <h1 className={styles.title}>Relatórios</h1>
-                <p className={styles.subtitle}>Análise dos dados coletados no Monster Energy Day</p>
                 <button onClick={downloadCSV} className={styles.exportButton}>
                     <Download size={18} />
                     Exportar Excel

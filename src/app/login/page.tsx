@@ -23,7 +23,7 @@ export default function LoginPage() {
             // 1. Check if user is authorized 
             const { data: user, error: userError } = await supabase
                 .from('authorized_users')
-                .select('email')
+                .select('email, name')
                 .eq('email', email)
                 .single()
 
@@ -35,7 +35,7 @@ export default function LoginPage() {
 
             // 2. Direct Bypass Login
             // We use localStorage to persist a simple "session"
-            localStorage.setItem('monster_user', JSON.stringify({ email: user.email }))
+            localStorage.setItem('monster_user', JSON.stringify({ email: user.email, name: user.name }))
 
             // Dispatch to notify other components (Sidebar) immediately
             window.dispatchEvent(new Event('storage'))
