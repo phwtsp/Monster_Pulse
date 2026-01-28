@@ -11,8 +11,7 @@
   --sidebar-text-hover: #97d700;
   --sidebar-active-bg: #E0E0E0;
 
-  --font-family: 'Inter',
-    sans-serif;
+  --font-family: "industry", sans-serif;
 }
 
 * {
