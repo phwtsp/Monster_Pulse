@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad, X, CheckCircle } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -52,6 +52,12 @@ export default function CadastroPage() {
         }
     }
 
+    const removeOtherBrand = (indexToRemove: number) => {
+        setOtherBrandsList(otherBrandsList.filter((_, idx) => idx !== indexToRemove))
+    }
+
+    const [showSuccessModal, setShowSuccessModal] = useState(false)
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -91,14 +97,8 @@ export default function CadastroPage() {
             console.error('Supabase Error:', error)
             alert(`Erro ao salvar: ${error.message} | Payload Email: ${payload.user_email}`)
         } else {
-            alert('Cadastro salvo com sucesso!')
-            setAge('')
-            setGender('')
-            setNewBrand('')
-            setOtherBrandsList([])
-            setPreferencesMonster([])
-            setMoments([])
-            setGamesPerDay('')
+            // Show custom success modal instead of alert
+            setShowSuccessModal(true)
 
             // Track Registration Event
             gtag.event({
@@ -108,6 +108,19 @@ export default function CadastroPage() {
             })
         }
         setLoading(false)
+    }
+
+    const handleCloseModal = () => {
+        setShowSuccessModal(false)
+        // Reset form
+        setAge('')
+        setGender('')
+        setNewBrand('')
+        setOtherBrandsList([])
+        setPreferencesMonster([])
+        setMoments([])
+        setGamesPerDay('')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const [hoveredFlavor, setHoveredFlavor] = useState<string | null>(null)
@@ -129,6 +142,20 @@ export default function CadastroPage() {
     return (
         <div className={styles.container}>
             <div className={styles.bgImage} />
+
+            {/* Success Modal */}
+            {showSuccessModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <CheckCircle size={64} color="#97d700" style={{ margin: '0 auto' }} />
+                        <h2 className={styles.modalTitle}>Cadastro Salvo!</h2>
+                        <p className={styles.modalText}>As informações foram registradas com sucesso.</p>
+                        <button onClick={handleCloseModal} className={styles.modalButton}>
+                            OK, Novo Cadastro
+                        </button>
+                    </div>
+                </div>
+            )}
 
             {/* Floating Can Display */}
             {hoveredFlavor && (
@@ -193,14 +220,13 @@ export default function CadastroPage() {
                         <h2 className={styles.sectionTitle}>Jogos</h2>
                     </div>
                     <div className={styles.inputGroup}>
-                        <label className={styles.label}>Quantidade de jogos por dia</label>
+                        <label className={styles.label}>Quantidade de jogos por dia <span style={{ fontSize: '0.8rem', color: '#666', fontWeight: 'normal' }}>(Opcional)</span></label>
                         <input
                             type="number"
                             placeholder="Ex: 2"
                             value={gamesPerDay}
                             onChange={e => setGamesPerDay(e.target.value)}
                             className={styles.input}
-                            required
                         />
                     </div>
                 </section>
@@ -351,7 +377,17 @@ export default function CadastroPage() {
                     {otherBrandsList.length > 0 && (
                         <div className={styles.tagsContainer}>
                             {otherBrandsList.map((brand, idx) => (
-                                <span key={idx} className={styles.tag}>{brand}</span>
+                                <span key={idx} className={styles.tag}>
+                                    {brand}
+                                    <button
+                                        type="button"
+                                        onClick={() => removeOtherBrand(idx)}
+                                        className={styles.removeTagButton}
+                                        title="Remover"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </span>
                             ))}
                         </div>
                     )}
