@@ -229,6 +229,53 @@ export default function RelatoriosPage() {
         document.body.removeChild(link)
     }
 
+    const downloadExcel = () => {
+        // Data prep
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Jogos por Dia', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+
+        const rows = filteredData.map(row => {
+            const dateObj = new Date(row.created_at)
+            const dateStr = dateObj.toLocaleDateString('pt-BR')
+            const timeStr = dateObj.toLocaleTimeString('pt-BR')
+            const dateTime = `${dateStr}, ${timeStr}`
+
+            const flavors = Array.isArray(row.preferences_monster)
+                ? row.preferences_monster.join(', ')
+                : (row.preferences_monster || '')
+
+            const others = row.other_brands ? row.other_brands : ''
+
+            const moments = Array.isArray(row.consumption_moments)
+                ? row.consumption_moments.join(', ')
+                : (row.consumption_moments || '')
+
+            const games = row.games_per_day || 0
+
+            return [
+                dateTime,
+                row.age,
+                row.gender,
+                games,
+                flavors,
+                others,
+                moments
+            ]
+        })
+
+        const wb = XLSX.utils.book_new()
+        const ws = XLSX.utils.aoa_to_sheet([header, ...rows])
+        XLSX.utils.book_append_sheet(wb, ws, "Dados")
+
+        // Date format DD-MM-YYYY
+        const now = new Date()
+        const day = String(now.getDate()).padStart(2, '0')
+        const month = String(now.getMonth() + 1).padStart(2, '0')
+        const year = now.getFullYear()
+        const dateStr = `${day}-${month}-${year}`
+
+        XLSX.writeFile(wb, `monster_pesquisa_${dateStr}.xlsx`)
+    }
+
     const COLORS = ['#97d700', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF']
 
     return (
@@ -248,10 +295,16 @@ export default function RelatoriosPage() {
                         maxDate={maxDate}
                     />
 
-                    <button onClick={downloadCSV} className={styles.exportButton}>
-                        <Download size={18} />
-                        Exportar Excel
-                    </button>
+                    <div className={styles.exportActions}>
+                        <button onClick={downloadCSV} className={styles.exportButton} style={{ backgroundColor: '#202020', border: '1px solid #333', color: '#fff' }}>
+                            <Download size={18} />
+                            CSV
+                        </button>
+                        <button onClick={downloadExcel} className={styles.exportButton}>
+                            <FileSpreadsheet size={18} />
+                            Excel (.xlsx)
+                        </button>
+                    </div>
                 </div>
             </div>
 

@@ -19,6 +19,14 @@
     opacity: 0.2;
 }
 
+.title {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    text-align: center;
+}
+
 .form {
     display: flex;
     flex-direction: column;

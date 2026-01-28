@@ -24,6 +24,26 @@
     }
 }
 
+/* Mobile Overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    /* Below sidebar (100) */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.overlayOpen {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .logoBox {
     display: flex;
     justify-content: center;
