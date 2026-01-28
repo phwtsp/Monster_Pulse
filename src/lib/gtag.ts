@@ -1,4 +1,4 @@
-export const GA_TRACKING_ID = 'G-TE8W556GFR'
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-TE8W556GFR'
 
 declare global {
     interface Window {
