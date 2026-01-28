@@ -259,9 +259,8 @@
 }
 
 .floatingCanImage {
-    height: 60vh;
-    /* Big impact */
-    max-height: 500px;
+    height: 18vh;
+    max-height: 160px;
     width: auto;
     object-fit: contain;
 }
