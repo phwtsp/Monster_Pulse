@@ -54,3 +54,30 @@ a {
 .hidden {
   display: none;
 }
+
+.mobile-trigger-btn {
+  display: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 102;
+  padding: 10px;
+  border-radius: 50%;
+  background-color: #97d700;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.mobile-trigger-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .mobile-trigger-btn {
+    display: flex;
+  }
+}

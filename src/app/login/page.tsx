@@ -33,20 +33,15 @@ export default function LoginPage() {
                 return
             }
 
-            // 2. Send Magic Link
-            // Using `shouldCreateUser: false` ideally, but strictly relying on table check first
-            const { error: authError } = await supabase.auth.signInWithOtp({
-                email,
-                options: {
-                    shouldCreateUser: true, // Allow Supabase Auth creation if valid in our table
-                }
-            })
+            // 2. Direct Bypass Login
+            // We use localStorage to persist a simple "session"
+            localStorage.setItem('monster_user', JSON.stringify({ email: user.email }))
 
-            if (authError) {
-                setErrorMsg(authError.message)
-            } else {
-                setSent(true)
-            }
+            // Dispatch to notify other components (Sidebar) immediately
+            window.dispatchEvent(new Event('storage'))
+
+            // Redirect
+            router.push('/')
 
         } catch (err: any) {
             setErrorMsg('Ocorreu um erro inesperado.')
