@@ -11,12 +11,14 @@ export default function RelatoriosPage() {
     const [loading, setLoading] = useState(true)
 
     // KPIs
+
     const [total, setTotal] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
     const [genderData, setGenderData] = useState<any[]>([])
     const [ageData, setAgeData] = useState<any[]>([])
     const [flavorData, setFlavorData] = useState<any[]>([])
+    const [gamesData, setGamesData] = useState<any[]>([])
 
     useEffect(() => {
         fetchData()
@@ -43,6 +45,7 @@ export default function RelatoriosPage() {
     }
 
     const calculateMetrics = (surveys: any[]) => {
+        // ... (Existing metrics logic: Total, Avg Age, Top Flavor, Pie, Gender, Age) ...
         // 1. Total
         setTotal(surveys.length)
 
@@ -53,27 +56,20 @@ export default function RelatoriosPage() {
         // 3. Top Flavor & Pie Data
         const flavorCounts: Record<string, number> = {}
         surveys.forEach(s => {
-            // Handle Consolidated Column first
             if (s.preferences_monster && Array.isArray(s.preferences_monster)) {
                 s.preferences_monster.forEach((f: string) => {
                     flavorCounts[f] = (flavorCounts[f] || 0) + 1
                 })
             }
         })
-
         const sortedFlavors = Object.entries(flavorCounts).sort((a, b) => b[1] - a[1])
         setTopFlavor(sortedFlavors[0] ? sortedFlavors[0][0] : '-')
-
-        // Pie Chart Data (Top 10 to avoid clutter)
         setFlavorData(sortedFlavors.slice(0, 10).map(([name, value]) => ({ name, value })))
 
-
-        // 4. Gender Data (Bar)
+        // 4. Gender Data
         const genderCounts: Record<string, number> = { Masculino: 0, Feminino: 0, Outros: 0 }
         surveys.forEach(s => {
-            if (genderCounts[s.gender] !== undefined) {
-                genderCounts[s.gender]++
-            }
+            if (genderCounts[s.gender] !== undefined) genderCounts[s.gender]++
         })
         setGenderData([
             { name: 'Masculino', value: genderCounts['Masculino'] },
@@ -81,7 +77,7 @@ export default function RelatoriosPage() {
             { name: 'Outros', value: genderCounts['Outros'] }
         ])
 
-        // 5. Age Buckets (Bar)
+        // 5. Age Buckets
         const buckets = { '18-25': 0, '26-35': 0, '36-45': 0, '45+': 0 }
         surveys.forEach(s => {
             const a = s.age
@@ -91,37 +87,59 @@ export default function RelatoriosPage() {
             else if (a > 45) buckets['45+']++
         })
         setAgeData(Object.entries(buckets).map(([name, value]) => ({ name, value })))
+
+        // 6. Games per Day Logic (0 to Max)
+        // Find max games value
+        let maxGames = 0
+        surveys.forEach(s => {
+            if (s.games_per_day > maxGames) maxGames = s.games_per_day
+        })
+        // Initialize counts for 0 to maxGames
+        const gamesCounts: Record<number, number> = {}
+        for (let i = 0; i <= maxGames; i++) {
+            gamesCounts[i] = 0
+        }
+        // Count
+        surveys.forEach(s => {
+            const g = s.games_per_day || 0
+            if (gamesCounts[g] !== undefined) gamesCounts[g]++
+        })
+        // Convert to array
+        const gamesChartData = Object.entries(gamesCounts).map(([qty, count]) => ({
+            name: qty.toString(), // Axis X
+            value: count // Axis Y
+        }))
+        setGamesData(gamesChartData)
     }
 
     const downloadCSV = () => {
-        // Strict Format:
-        // val1,val2,"list, of, things",...
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        // Strict Format
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Jogos por Dia', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = data.map(row => {
-            // Format Date: DD/MM/YYYY, HH:MM:SS
             const dateObj = new Date(row.created_at)
             const dateStr = dateObj.toLocaleDateString('pt-BR')
             const timeStr = dateObj.toLocaleTimeString('pt-BR')
             const dateTime = `"${dateStr}, ${timeStr}"`
 
-            // Consolidated Flavors
             const flavors = Array.isArray(row.preferences_monster)
                 ? `"${row.preferences_monster.join(', ')}"`
-                : `"${row.preferences_monster || ''}"` // Fallback if string
+                : `"${row.preferences_monster || ''}"`
 
-            // Outros
-            const others = row.other_brands ? `"${row.other_brands}"` : '' // Already comma separated string usually, but wrap in quotes
+            const others = row.other_brands ? `"${row.other_brands}"` : ''
 
-            // Moments
             const moments = Array.isArray(row.consumption_moments)
                 ? `"${row.consumption_moments.join(', ')}"`
                 : `"${row.consumption_moments || ''}"`
+
+            // New Field
+            const games = row.games_per_day || 0
 
             return [
                 dateTime,
                 row.age,
                 row.gender,
+                games,
                 flavors,
                 others,
                 moments
@@ -236,7 +254,8 @@ export default function RelatoriosPage() {
 
             {/* Charts Row 2 */}
             <div className={styles.chartRowFull}>
-                <div className={styles.chartCardFull}>
+                {/* Age Chart */}
+                <div className={styles.chartCard}>
                     <h3 className={styles.chartTitle}>Distribuição por Faixa Etária</h3>
                     <div className={styles.chartWrapper}>
                         <ResponsiveContainer width="100%" height={250}>
@@ -246,6 +265,22 @@ export default function RelatoriosPage() {
                                 <YAxis stroke="#666" />
                                 <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }} />
                                 <Bar dataKey="value" fill="#97d700" barSize={80} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* Games Chart (New) */}
+                <div className={styles.chartCard}>
+                    <h3 className={styles.chartTitle}>Jogos por Dia</h3>
+                    <div className={styles.chartWrapper}>
+                        <ResponsiveContainer width="100%" height={250}>
+                            <BarChart data={gamesData}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                                <XAxis dataKey="name" stroke="#666" />
+                                <YAxis stroke="#666" allowDecimals={false} />
+                                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }} />
+                                <Bar dataKey="value" fill="#AF19FF" barSize={50} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>

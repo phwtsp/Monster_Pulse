@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad } from 'lucide-react'
 
 // Icon mapping (simplified for demo) or just section headers
 const FLAVORS = {
@@ -28,6 +28,7 @@ export default function CadastroPage() {
     // Form State
     const [age, setAge] = useState('')
     const [gender, setGender] = useState('')
+    const [gamesPerDay, setGamesPerDay] = useState('') // New Field
     const [newBrand, setNewBrand] = useState('')
     const [otherBrandsList, setOtherBrandsList] = useState<string[]>([])
 
@@ -55,21 +56,16 @@ export default function CadastroPage() {
         setLoading(true)
 
         const { data: { user } } = await supabase.auth.getUser()
-
-        // Combine other brands list into string or keep array if schema changed? 
-        // Plan said: other_brands (text) -> keep as text comma separated or JSON. 
-        // User requested: "Separado por vírgulas" in CSV. Logic: Save array in JSONB or string.
-        // Let's save as string in DB for simplicity with legacy column, or update schema? 
-        // DB Schema has `other_brands text`. So join them.
         const otherBrandsString = otherBrandsList.join(', ')
 
         const { error } = await supabase.from('surveys').insert({
             user_email: user?.email,
             age: parseInt(age),
             gender,
-            preferences_monster: preferencesMonster, // Now single column
+            preferences_monster: preferencesMonster,
             consumption_moments: moments,
             other_brands: otherBrandsString,
+            games_per_day: parseInt(gamesPerDay || '0'), // Insert new field
         })
 
         if (error) {
@@ -82,6 +78,7 @@ export default function CadastroPage() {
             setOtherBrandsList([])
             setPreferencesMonster([])
             setMoments([])
+            setGamesPerDay('')
         }
         setLoading(false)
     }
@@ -130,6 +127,25 @@ export default function CadastroPage() {
                                 ))}
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                {/* Section: Jogos */}
+                <section className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <Gamepad size={20} color="#97d700" />
+                        <h2 className={styles.sectionTitle}>Jogos</h2>
+                    </div>
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label}>Quantidade de jogos por dia</label>
+                        <input
+                            type="number"
+                            placeholder="Ex: 2"
+                            value={gamesPerDay}
+                            onChange={e => setGamesPerDay(e.target.value)}
+                            className={styles.input}
+                            required
+                        />
                     </div>
                 </section>
 

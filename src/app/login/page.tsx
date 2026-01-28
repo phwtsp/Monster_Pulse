@@ -73,6 +73,9 @@ export default function LoginPage() {
                                         type="email"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleLogin(e)
+                                        }}
                                         placeholder="Digite seu email"
                                         className={styles.input}
                                         required
