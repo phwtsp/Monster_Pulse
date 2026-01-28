@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 import GoogleAnalytics from '@/components/GoogleAnalytics'
 
+import { Suspense } from 'react'
+
 export const metadata: Metadata = {
   title: 'Monster Pesquisa',
   description: 'Survey Application',
@@ -18,7 +20,9 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://use.typekit.net/zxz2xqf.css" />
       </head>
       <body>
-        <GoogleAnalytics />
+        <Suspense fallback={null}>
+          <GoogleAnalytics />
+        </Suspense>
         {children}
       </body>
     </html>
