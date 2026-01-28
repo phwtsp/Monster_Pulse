@@ -58,7 +58,12 @@ export default function CadastroPage() {
 
         // Retrieve user from localStorage (Direct Bypass Login)
         const storedUser = localStorage.getItem('monster_user')
-        const userEmail = storedUser ? JSON.parse(storedUser).email : null
+        let userEmail = storedUser ? JSON.parse(storedUser).email : null
+
+        // Extra safety check
+        if (typeof userEmail === 'string') {
+            userEmail = userEmail.trim()
+        }
 
         if (!userEmail) {
             alert('Erro: Usuário não identificado. Faça login novamente.')
@@ -68,18 +73,23 @@ export default function CadastroPage() {
 
         const otherBrandsString = otherBrandsList.join(', ')
 
-        const { error } = await supabase.from('surveys').insert({
+        const payload = {
             user_email: userEmail,
             age: parseInt(age),
             gender,
             preferences_monster: preferencesMonster,
             consumption_moments: moments,
             other_brands: otherBrandsString,
-            games_per_day: parseInt(gamesPerDay || '0'), // Insert new field
-        })
+            games_per_day: parseInt(gamesPerDay || '0'),
+        }
+
+        console.log('Sending Payload:', payload)
+
+        const { error } = await supabase.from('surveys').insert(payload)
 
         if (error) {
-            alert('Erro ao salvar: ' + error.message)
+            console.error('Supabase Error:', error)
+            alert(`Erro ao salvar: ${error.message} | Payload Email: ${payload.user_email}`)
         } else {
             alert('Cadastro salvo com sucesso!')
             setAge('')
