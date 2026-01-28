@@ -7,6 +7,7 @@ import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet } fro
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
 import * as XLSX from 'xlsx'
+import * as gtag from '@/lib/gtag'
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -227,6 +228,13 @@ export default function RelatoriosPage() {
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
+
+        // Track CSV Download
+        gtag.event({
+            action: 'download_report',
+            category: 'reports',
+            label: 'csv',
+        })
     }
 
     const downloadExcel = () => {
@@ -274,6 +282,13 @@ export default function RelatoriosPage() {
         const dateStr = `${day}-${month}-${year}`
 
         XLSX.writeFile(wb, `monster_pesquisa_${dateStr}.xlsx`)
+
+        // Track Excel Download
+        gtag.event({
+            action: 'download_report',
+            category: 'reports',
+            label: 'xlsx',
+        })
     }
 
     const COLORS = ['#97d700', '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF']

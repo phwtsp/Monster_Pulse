@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import GoogleAnalytics from '@/components/GoogleAnalytics'
 
 export const metadata: Metadata = {
   title: 'Monster Pesquisa',
@@ -16,7 +17,10 @@ export default function RootLayout({
       <head>
         <link rel="stylesheet" href="https://use.typekit.net/zxz2xqf.css" />
       </head>
-      <body>{children}</body>
+      <body>
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   )
 }

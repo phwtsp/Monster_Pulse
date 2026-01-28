@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './login.module.css'
 import { Loader2, Zap, Mail } from 'lucide-react'
+import * as gtag from '@/lib/gtag'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -39,6 +40,13 @@ export default function LoginPage() {
 
             // Dispatch to notify other components (Sidebar) immediately
             window.dispatchEvent(new Event('storage'))
+
+            // Track Login Event
+            gtag.event({
+                action: 'login',
+                category: 'authentication',
+                label: email,
+            })
 
             // Redirect
             router.push('/')

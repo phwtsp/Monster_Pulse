@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
 import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad } from 'lucide-react'
+import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
 const FLAVORS = {
@@ -79,6 +80,13 @@ export default function CadastroPage() {
             setPreferencesMonster([])
             setMoments([])
             setGamesPerDay('')
+
+            // Track Registration Event
+            gtag.event({
+                action: 'sign_up',
+                category: 'survey',
+                label: 'new_registration',
+            })
         }
         setLoading(false)
     }
