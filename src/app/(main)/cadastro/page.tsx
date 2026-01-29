@@ -510,7 +510,7 @@ export default function CadastroPage() {
                                     <div className={styles.inputGroup}>
                                         <label className={styles.label} style={{ textAlign: 'left' }}>Comentários</label>
                                         <textarea
-                                            placeholder="Observações sobre a partida..."
+                                            placeholder="Comentários do consumidor..."
                                             value={gameComments}
                                             onChange={e => setGameComments(e.target.value)}
                                             className={styles.input}
@@ -520,7 +520,7 @@ export default function CadastroPage() {
                                     </div>
 
                                     <button type="submit" disabled={gameSubmitting} className={styles.modalButton} style={{ width: '100%', marginTop: '0.5rem' }}>
-                                        {gameSubmitting ? <Loader2 className="animate-spin" /> : 'ENVIAR JOGADA'}
+                                        {gameSubmitting ? <Loader2 className="animate-spin" /> : 'ENVIAR'}
                                     </button>
                                 </form>
                             </>

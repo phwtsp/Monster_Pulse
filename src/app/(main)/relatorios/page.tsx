@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './relatorios.module.css'
-import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet } from 'lucide-react'
+import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet, Gamepad2 } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
 import * as XLSX from 'xlsx'
@@ -34,6 +34,7 @@ export default function RelatoriosPage() {
 
     // KPIs State
     const [total, setTotal] = useState(0)
+    const [totalPlayers, setTotalPlayers] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
     const [topFlavorCount, setTopFlavorCount] = useState(0)
@@ -88,8 +89,27 @@ export default function RelatoriosPage() {
                 setMaxDate(dates[0])
             }
         }
-        setLoading(false)
+
+        // Fetch Game Sessions for Player Count
+        const { data: games, error: gamesError } = await supabase
+            .from('game_sessions')
+            .select('*')
+
+        if (!gamesError && games) {
+            setLoading(false) // Wait to set loading until both are done
+            // Calculate total players directly here or store in state to filter?
+            // For now, let's calculate total un-filtered players or store them to filter.
+            // Ideally we should filter games by date too, but let's stick to total for now as requested or filter them if possible.
+            // Let's store games data to filter it too? The user didn't explicitly ask for date filtering on players, but it makes sense.
+            // For simplicity and to follow "Jogadores, somando a quantidade", let's sum all or filter by the same date range if possible.
+            // Let's add a separate state for gamesDataRaw
+            setGamesDataRaw(games)
+        } else {
+            setLoading(false)
+        }
     }
+
+    const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
 
     const filterData = () => {
         if (!data.length) return
@@ -109,12 +129,35 @@ export default function RelatoriosPage() {
         }
 
         setFilteredData(filtered)
-        calculateMetrics(filtered)
+
+        // Filter Games Data
+        let filteredGames = gamesDataRaw
+        if (startDate && endDate) {
+            const start = new Date(startDate)
+            start.setHours(0, 0, 0, 0)
+            const end = new Date(endDate)
+            end.setHours(23, 59, 59, 999)
+
+            filteredGames = gamesDataRaw.filter(item => {
+                const itemDate = new Date(item.created_at)
+                return itemDate >= start && itemDate <= end
+            })
+        }
+
+        calculateMetrics(filtered, filteredGames)
     }
 
-    const calculateMetrics = (surveys: any[]) => {
+    const calculateMetrics = (surveys: any[], games: any[] = []) => {
         // 1. Total
         setTotal(surveys.length)
+
+        // 1.1 Total Players
+        let playersCount = 0
+        games.forEach(g => {
+            if (g.player_count === '1 Jogador') playersCount += 1
+            if (g.player_count === '2 Jogadores') playersCount += 2
+        })
+        setTotalPlayers(playersCount)
 
         // 2. Avg Age
         const totalAge = surveys.reduce((acc, curr) => acc + (curr.age || 0), 0)
@@ -329,11 +372,11 @@ export default function RelatoriosPage() {
 
                 <div className={styles.card}>
                     <div className={styles.cardHeader}>
-                        <span>Taxa de Conversão</span>
-                        <Activity size={20} color="#FFBB28" />
+                        <span>Jogadores</span>
+                        <Gamepad2 size={20} color="#FFBB28" />
                     </div>
-                    <div className={styles.bigNumber}>100%</div>
-                    <div className={styles.cardFooter}>cadastros completos</div>
+                    <div className={styles.bigNumber}>{totalPlayers}</div>
+                    <div className={styles.cardFooter}>jogadores registrados</div>
                 </div>
             </div>
 
