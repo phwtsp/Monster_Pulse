@@ -3,8 +3,12 @@
 import styles from './page.module.css'
 import Link from 'next/link'
 import { ClipboardList, BarChart3, Zap } from 'lucide-react'
+import { useEffect } from 'react'
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "Monster Pesquisa | Início"
+  }, [])
   return (
     <div className={styles.landingContainer}>
       <video
@@ -26,11 +30,11 @@ export default function Home() {
       <div className={styles.actionButtons}>
         <Link href="/cadastro" className={styles.bigButton}>
           <ClipboardList size={24} />
-          CADASTROS
+          CADASTRO
         </Link>
         <Link href="/relatorios" className={styles.bigButton}>
           <BarChart3 size={24} />
-          RELATÓRIOS
+          RELATÓRIO
         </Link>
       </div>
     </div>

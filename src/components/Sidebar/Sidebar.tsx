@@ -47,7 +47,7 @@ export default function Sidebar() {
     const menuItems = [
         { name: 'Início', path: '/', icon: Home },
         { name: 'Cadastro', path: '/cadastro', icon: ClipboardList },
-        { name: 'Relatórios', path: '/relatorios', icon: BarChart3 },
+        { name: 'Relatório', path: '/relatorios', icon: BarChart3 },
     ]
 
     return (

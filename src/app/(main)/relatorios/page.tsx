@@ -36,12 +36,14 @@ export default function RelatoriosPage() {
     const [total, setTotal] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
+    const [topFlavorCount, setTopFlavorCount] = useState(0)
     const [genderData, setGenderData] = useState<any[]>([])
     const [ageData, setAgeData] = useState<any[]>([])
     const [flavorData, setFlavorData] = useState<any[]>([])
     const [gamesData, setGamesData] = useState<any[]>([])
 
     useEffect(() => {
+        document.title = "Monster Pesquisa | Relatório"
         fetchData()
     }, [])
 
@@ -129,6 +131,7 @@ export default function RelatoriosPage() {
         })
         const sortedFlavors = Object.entries(flavorCounts).sort((a, b) => b[1] - a[1])
         setTopFlavor(sortedFlavors[0] ? sortedFlavors[0][0] : '-')
+        setTopFlavorCount(sortedFlavors[0] ? sortedFlavors[0][1] : 0)
         setFlavorData(sortedFlavors.slice(0, 10).map(([name, value]) => ({ name, value })))
 
         // 4. Gender Data
@@ -143,13 +146,14 @@ export default function RelatoriosPage() {
         ])
 
         // 5. Age Buckets
-        const buckets = { '18-25': 0, '26-35': 0, '36-45': 0, '45+': 0 }
+        const buckets = { 'Gen Z': 0, 'Gen Y': 0, 'Gen X': 0, 'BB': 0, '80+': 0 }
         surveys.forEach(s => {
             const a = s.age
-            if (a >= 18 && a <= 25) buckets['18-25']++
-            else if (a >= 26 && a <= 35) buckets['26-35']++
-            else if (a >= 36 && a <= 45) buckets['36-45']++
-            else if (a > 45) buckets['45+']++
+            if (a >= 14 && a <= 29) buckets['Gen Z']++
+            else if (a >= 30 && a <= 45) buckets['Gen Y']++
+            else if (a >= 46 && a <= 61) buckets['Gen X']++
+            else if (a >= 62 && a <= 80) buckets['BB']++
+            else if (a > 80) buckets['80+']++
         })
         setAgeData(Object.entries(buckets).map(([name, value]) => ({ name, value })))
 
@@ -348,7 +352,7 @@ export default function RelatoriosPage() {
                         <Heart size={20} color="#AF19FF" />
                     </div>
                     <div className={styles.flavorName}>{topFlavor}</div>
-                    <div className={styles.cardFooter}>votos contabilizados</div>
+                    <div className={styles.cardFooter}><strong>{topFlavorCount}</strong> votos contabilizados</div>
                 </div>
 
                 <div className={styles.card}>

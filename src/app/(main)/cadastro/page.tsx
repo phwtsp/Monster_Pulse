@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
 import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder } from 'lucide-react'
@@ -24,6 +24,10 @@ const MOMENTS = [
 ]
 
 export default function CadastroPage() {
+    useEffect(() => {
+        document.title = "Monster Pesquisa | Cadastro"
+    }, [])
+
     const [loading, setLoading] = useState(false)
 
     // Form State

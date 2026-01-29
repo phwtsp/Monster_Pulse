@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabaseClient'
@@ -15,6 +15,10 @@ export default function LoginPage() {
     const [errorMsg, setErrorMsg] = useState('')
 
     const router = useRouter()
+
+    useEffect(() => {
+        document.title = "Monster Pesquisa | Login"
+    }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
