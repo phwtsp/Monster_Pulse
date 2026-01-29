@@ -24,6 +24,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
     const [filteredData, setFilteredData] = useState<any[]>([])
+    const [filteredGamesData, setFilteredGamesData] = useState<any[]>([])
     const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
@@ -144,6 +145,7 @@ export default function RelatoriosPage() {
             })
         }
 
+        setFilteredGamesData(filteredGames)
         calculateMetrics(filtered, filteredGames)
     }
 
@@ -479,6 +481,42 @@ export default function RelatoriosPage() {
                 </div>
                 <div className={styles.tableFooter}>
                     E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} cadastros...
+                </div>
+            </div>
+
+            {/* Game Comments Table */}
+            <div className={styles.tableSection} style={{ marginTop: '2rem' }}>
+                <div className={styles.tableHeader}>
+                    <Gamepad2 size={18} color="#97d700" style={{ marginRight: 8 }} />
+                    Comentários de Jogadas
+                </div>
+                <div className={styles.tableWrapper}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '200px' }}>Data e Hora</th>
+                                <th>Comentário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredGamesData.map((game) => (
+                                <tr key={game.id}>
+                                    <td>{new Date(game.created_at).toLocaleString('pt-BR')}</td>
+                                    <td style={{ whiteSpace: 'pre-wrap' }}>{game.comments || '-'}</td>
+                                </tr>
+                            ))}
+                            {filteredGamesData.length === 0 && (
+                                <tr>
+                                    <td colSpan={2} style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                                        Nenhum comentário registrado no período.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className={styles.tableFooter}>
+                    Total de {filteredGamesData.length} registros
                 </div>
             </div>
 
