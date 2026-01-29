@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -33,7 +33,7 @@ export default function CadastroPage() {
     // Form State
     const [age, setAge] = useState('')
     const [gender, setGender] = useState('')
-    const [gamesPerDay, setGamesPerDay] = useState('') // New Field
+
     const [newBrand, setNewBrand] = useState('')
     const [otherBrandsList, setOtherBrandsList] = useState<string[]>([])
 
@@ -90,7 +90,6 @@ export default function CadastroPage() {
             preferences_monster: preferencesMonster,
             consumption_moments: moments,
             other_brands: otherBrandsString,
-            games_per_day: parseInt(gamesPerDay || '0'),
         }
 
         console.log('Sending Payload:', payload)
@@ -123,7 +122,7 @@ export default function CadastroPage() {
         setOtherBrandsList([])
         setPreferencesMonster([])
         setMoments([])
-        setGamesPerDay('')
+
         window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
@@ -217,23 +216,7 @@ export default function CadastroPage() {
                     </div>
                 </section>
 
-                {/* Section: Jogos */}
-                <section className={styles.section}>
-                    <div className={styles.sectionHeader}>
-                        <Gamepad size={20} color="#97d700" />
-                        <h2 className={styles.sectionTitle}>Jogos</h2>
-                    </div>
-                    <div className={styles.inputGroup}>
-                        <label className={styles.label}>Quantidade de jogos por dia <span style={{ fontSize: '0.8rem', color: '#666', fontWeight: 'normal' }}>(Opcional)</span></label>
-                        <input
-                            type="number"
-                            placeholder="Ex: 2"
-                            value={gamesPerDay}
-                            onChange={e => setGamesPerDay(e.target.value)}
-                            className={styles.input}
-                        />
-                    </div>
-                </section>
+
 
                 {/* Preferences Monster */}
                 <section className={styles.section}>

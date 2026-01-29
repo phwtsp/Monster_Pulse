@@ -40,7 +40,7 @@ export default function RelatoriosPage() {
     const [genderData, setGenderData] = useState<any[]>([])
     const [ageData, setAgeData] = useState<any[]>([])
     const [flavorData, setFlavorData] = useState<any[]>([])
-    const [gamesData, setGamesData] = useState<any[]>([])
+
 
     useEffect(() => {
         document.title = "Monster Pesquisa | Relatório"
@@ -157,33 +157,12 @@ export default function RelatoriosPage() {
         })
         setAgeData(Object.entries(buckets).map(([name, value]) => ({ name, value })))
 
-        // 6. Games per Day Logic (0 to Max)
-        // Find max games value
-        let maxGames = 0
-        surveys.forEach(s => {
-            if (s.games_per_day > maxGames) maxGames = s.games_per_day
-        })
-        // Initialize counts for 0 to maxGames
-        const gamesCounts: Record<number, number> = {}
-        for (let i = 0; i <= maxGames; i++) {
-            gamesCounts[i] = 0
-        }
-        // Count
-        surveys.forEach(s => {
-            const g = s.games_per_day || 0
-            if (gamesCounts[g] !== undefined) gamesCounts[g]++
-        })
-        // Convert to array
-        const gamesChartData = Object.entries(gamesCounts).map(([qty, count]) => ({
-            name: qty.toString(), // Axis X
-            value: count // Axis Y
-        }))
-        setGamesData(gamesChartData)
+
     }
 
     const downloadCSV = () => {
         // Strict Format
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Jogos por Dia', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -201,14 +180,10 @@ export default function RelatoriosPage() {
                 ? `"${row.consumption_moments.join(', ')}"`
                 : `"${row.consumption_moments || ''}"`
 
-            // New Field
-            const games = row.games_per_day || 0
-
             return [
                 dateTime,
                 row.age,
                 row.gender,
-                games,
                 flavors,
                 others,
                 moments
@@ -243,7 +218,7 @@ export default function RelatoriosPage() {
 
     const downloadExcel = () => {
         // Data prep
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Jogos por Dia', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -261,13 +236,10 @@ export default function RelatoriosPage() {
                 ? row.consumption_moments.join(', ')
                 : (row.consumption_moments || '')
 
-            const games = row.games_per_day || 0
-
             return [
                 dateTime,
                 row.age,
                 row.gender,
-                games,
                 flavors,
                 others,
                 moments
@@ -427,21 +399,7 @@ export default function RelatoriosPage() {
                     </div>
                 </div>
 
-                {/* Games Chart (New) */}
-                <div className={styles.chartCard}>
-                    <h3 className={styles.chartTitle}>Jogos por Dia</h3>
-                    <div className={styles.chartWrapper}>
-                        <ResponsiveContainer width="100%" height={250}>
-                            <BarChart data={gamesData}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                                <XAxis dataKey="name" stroke="#666" />
-                                <YAxis stroke="#666" allowDecimals={false} />
-                                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ backgroundColor: '#000', border: '1px solid #333' }} />
-                                <Bar dataKey="value" fill="#AF19FF" barSize={50} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
+
             </div>
 
             {/* Data Table */}
