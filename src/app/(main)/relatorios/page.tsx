@@ -24,6 +24,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
     const [filteredData, setFilteredData] = useState<any[]>([])
+    const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
     // Date Filter State
@@ -109,7 +110,6 @@ export default function RelatoriosPage() {
         }
     }
 
-    const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
 
     const filterData = () => {
         if (!data.length) return
