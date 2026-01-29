@@ -96,6 +96,7 @@ export default function RelatoriosPage() {
         const { data: games, error: gamesError } = await supabase
             .from('game_sessions')
             .select('*')
+            .order('created_at', { ascending: false })
 
         if (!gamesError && games) {
             setLoading(false) // Wait to set loading until both are done
@@ -488,7 +489,7 @@ export default function RelatoriosPage() {
             <div className={styles.tableSection} style={{ marginTop: '2rem' }}>
                 <div className={styles.tableHeader}>
                     <Gamepad2 size={18} color="#97d700" style={{ marginRight: 8 }} />
-                    Comentários de Jogadas
+                    Comentários
                 </div>
                 <div className={styles.tableWrapper}>
                     <table className={styles.table}>

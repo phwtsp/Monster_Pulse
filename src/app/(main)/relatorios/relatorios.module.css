@@ -250,6 +250,13 @@
     border-bottom: none;
 }
 
+.table tbody tr:hover td {
+    font-weight: 700;
+    color: #fff;
+    background-color: rgba(151, 215, 0, 0.05);
+    /* Optional: add subtle green tint */
+}
+
 .truncate {
     white-space: nowrap;
     overflow: hidden;
