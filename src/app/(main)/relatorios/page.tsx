@@ -50,7 +50,7 @@ export default function RelatoriosPage() {
 
     useEffect(() => {
         filterData()
-    }, [startDate, endDate, data])
+    }, [startDate, endDate, data, gamesDataRaw])
 
     const fetchData = async () => {
         setLoading(true)
