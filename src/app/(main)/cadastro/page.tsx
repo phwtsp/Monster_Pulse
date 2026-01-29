@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad, X, CheckCircle } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, Gamepad, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -353,7 +353,7 @@ export default function CadastroPage() {
                 {/* Other Brands */}
                 <section className={styles.section}>
                     <div className={styles.sectionHeader}>
-                        <Coffee size={20} color="#97d700" />
+                        <Cylinder size={20} color="#97d700" />
                         <h2 className={styles.sectionTitle}>Outros Energéticos</h2>
                     </div>
                     <div className={styles.addBrandRow}>
@@ -401,18 +401,27 @@ export default function CadastroPage() {
                     </div>
                     <p className={styles.helperText}>Em que momentos você toma energético?</p>
                     <div className={styles.checkboxGrid}>
-                        {MOMENTS.map(moment => (
-                            <label key={moment} className={`${styles.checkboxBox} ${moments.includes(moment) ? styles.activeCheckbox : ''}`}>
-                                <input
-                                    type="checkbox"
-                                    checked={moments.includes(moment)}
-                                    onChange={() => togglePreference(setMoments, moments, moment)}
-                                    className={styles.hiddenCheckbox}
-                                />
-                                <span style={{ marginRight: '8px' }}>•</span>
-                                {moment}
-                            </label>
-                        ))}
+                        {MOMENTS.map(moment => {
+                            let Icon = MoreHorizontal;
+                            if (moment === 'Café da Manhã') Icon = Coffee;
+                            if (moment === 'Almoço') Icon = Utensils;
+                            if (moment === 'Lanche') Icon = Sandwich;
+                            if (moment === 'Para Treinar') Icon = Dumbbell;
+                            if (moment === 'Para Confraternizar') Icon = Users;
+
+                            return (
+                                <label key={moment} className={`${styles.checkboxBox} ${moments.includes(moment) ? styles.activeCheckbox : ''}`}>
+                                    <input
+                                        type="checkbox"
+                                        checked={moments.includes(moment)}
+                                        onChange={() => togglePreference(setMoments, moments, moment)}
+                                        className={styles.hiddenCheckbox}
+                                    />
+                                    <Icon size={18} color="#97d700" style={{ marginRight: '8px' }} />
+                                    {moment}
+                                </label>
+                            )
+                        })}
                     </div>
                 </section>
 

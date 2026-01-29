@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './login.module.css'
 import { Loader2, Zap, Mail } from 'lucide-react'
@@ -63,10 +64,14 @@ export default function LoginPage() {
             <div className={styles.centeredContent}>
 
                 <div className={styles.logoHeader}>
-                    <div className={styles.iconCircle}>
-                        <Zap size={32} color="#000" fill="#000" />
-                    </div>
-                    <h1 className={styles.brandName}>Monster Frame</h1>
+                    <Image
+                        src="/monster-logo-full.png"
+                        alt="Monster Pulse"
+                        width={280}
+                        height={80}
+                        priority
+                        style={{ objectFit: 'contain', marginBottom: '1rem' }}
+                    />
                     <p className={styles.brandSubtitle}>Event Data Collector</p>
                 </div>
 
@@ -94,10 +99,20 @@ export default function LoginPage() {
                             {errorMsg && <p className={styles.error}>{errorMsg}</p>}
 
                             <button type="submit" disabled={loading} className={styles.button}>
-                                {loading ? <Loader2 className="animate-spin" /> : 'Entrar no App'}
+                                {loading ? <Loader2 className="animate-spin" /> : 'Acessa App'}
                             </button>
 
-                            <p className={styles.footerText}>Acesso rápido e seguro apenas com email</p>
+                            <p className={styles.footerText}>
+                                Faça login com o e-mail previamente cadastrado. Para solicitar cadastro{' '}
+                                <a
+                                    href="http://wa.me/5514998229745"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ color: '#97d700', textDecoration: 'none', fontWeight: 'bold' }}
+                                >
+                                    entre em contato
+                                </a>
+                            </p>
                         </form>
                     ) : (
                         <div className={styles.success}>
