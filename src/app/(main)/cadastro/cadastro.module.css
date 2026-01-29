@@ -385,3 +385,55 @@
         opacity: 1;
     }
 }
+
+.fabButton {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    background-color: var(--monster-green);
+    color: #000;
+    border: none;
+    box-shadow: 0 4px 15px rgba(151, 215, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 100;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fabButton:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(151, 215, 0, 0.6);
+}
+
+.fabButton:active {
+    transform: scale(0.95);
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 768px) {
+    .modalContent {
+        width: 90%;
+        max-width: 400px;
+        padding: 1.5rem;
+    }
+}

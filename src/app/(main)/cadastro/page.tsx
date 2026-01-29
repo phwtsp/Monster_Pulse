@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder, Gamepad2 } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -140,6 +140,51 @@ export default function CadastroPage() {
 
     const getImageUrl = (flavor: string) => {
         return `/latas/${flavor}.png`
+    }
+
+    // --- Nova Implementação: Modal de Jogadas ---
+    const [showGameModal, setShowGameModal] = useState(false)
+    const [gamePlayerCount, setGamePlayerCount] = useState('1 Jogador')
+    const [gameComments, setGameComments] = useState('')
+    const [gameSubmitting, setGameSubmitting] = useState(false)
+    const [showGameSuccess, setShowGameSuccess] = useState(false)
+
+    const handleOpenGameModal = () => {
+        setGamePlayerCount('1 Jogador')
+        setGameComments('')
+        setShowGameModal(true)
+        setShowGameSuccess(false)
+    }
+
+    const handleCloseGameModal = () => {
+        setShowGameModal(false)
+        setShowGameSuccess(false)
+    }
+
+    const handleGameSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setGameSubmitting(true)
+
+        // Retrieve user like main form
+        const storedUser = localStorage.getItem('monster_user')
+        let userEmail = storedUser ? JSON.parse(storedUser).email : null
+        if (typeof userEmail === 'string') userEmail = userEmail.trim()
+
+        const payload = {
+            user_email: userEmail,
+            player_count: gamePlayerCount,
+            comments: gameComments
+        }
+
+        const { error } = await supabase.from('game_sessions').insert(payload)
+
+        if (error) {
+            console.error('Error saving game session:', error)
+            alert('Erro ao salvar jogada.')
+        } else {
+            setShowGameSuccess(true)
+        }
+        setGameSubmitting(false)
     }
 
     return (
@@ -416,6 +461,83 @@ export default function CadastroPage() {
                     {loading ? <Loader2 className="animate-spin" /> : 'SALVAR CADASTRO'}
                 </button>
             </form>
+
+            {/* Float Action Button (FAB) for Games */}
+            <button
+                className={styles.fabButton}
+                onClick={handleOpenGameModal}
+                title="Registrar Jogada"
+            >
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <Gamepad2 size={28} />
+                    <Plus size={16} style={{ position: 'absolute', top: -5, right: -8, fontWeight: 'bold' }} />
+                </div>
+            </button>
+
+            {/* Game Registration Modal */}
+            {showGameModal && (
+                <div className={styles.modalOverlay} style={{ zIndex: 11000 }}>
+                    <div className={styles.modalContent}>
+                        {!showGameSuccess ? (
+                            <>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <h2 className={styles.modalTitle} style={{ marginTop: 0 }}>Registrar Jogada</h2>
+                                    <button onClick={handleCloseGameModal} className={styles.closeButton}>
+                                        <X size={24} color="#666" />
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleGameSubmit} className={styles.form} style={{ gap: '1rem' }}>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label} style={{ textAlign: 'left' }}>Quantidade de Jogadores</label>
+                                        <div className={styles.radiosContainer} style={{ justifyContent: 'center' }}>
+                                            {['1 Jogador', '2 Jogadores'].map(opt => (
+                                                <label key={opt} className={`${styles.radioBox} ${gamePlayerCount === opt ? styles.activeRadio : ''}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="gamePlayerCount"
+                                                        value={opt}
+                                                        checked={gamePlayerCount === opt}
+                                                        onChange={() => setGamePlayerCount(opt)}
+                                                        className={styles.hiddenRadio}
+                                                    />
+                                                    {opt}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label} style={{ textAlign: 'left' }}>Comentários</label>
+                                        <textarea
+                                            placeholder="Observações sobre a partida..."
+                                            value={gameComments}
+                                            onChange={e => setGameComments(e.target.value)}
+                                            className={styles.input}
+                                            rows={3}
+                                            style={{ resize: 'vertical' }}
+                                        />
+                                    </div>
+
+                                    <button type="submit" disabled={gameSubmitting} className={styles.modalButton} style={{ width: '100%', marginTop: '0.5rem' }}>
+                                        {gameSubmitting ? <Loader2 className="animate-spin" /> : 'ENVIAR JOGADA'}
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle size={64} color="#97d700" style={{ margin: '0 auto' }} />
+                                <h2 className={styles.modalTitle}>Sucesso!</h2>
+                                <p className={styles.modalText}>Jogada registrada com sucesso.</p>
+                                <button onClick={handleCloseGameModal} className={styles.modalButton}>
+                                    OK
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
+
         </div>
     )
 }
