@@ -192,13 +192,13 @@ export default function RelatoriosPage() {
         ])
 
         // 5. Age Buckets
-        const buckets = { 'Gen Z': 0, 'Gen Y': 0, 'Gen X': 0, 'BB': 0, '80+': 0 }
+        const buckets = { 'Gen Z (13-28)': 0, 'Gen Y (29-44)': 0, 'Gen (45-60)': 0, 'BB (61-80)': 0, '80+': 0 }
         surveys.forEach(s => {
             const a = s.age
-            if (a >= 14 && a <= 29) buckets['Gen Z']++
-            else if (a >= 30 && a <= 45) buckets['Gen Y']++
-            else if (a >= 46 && a <= 61) buckets['Gen X']++
-            else if (a >= 62 && a <= 80) buckets['BB']++
+            if (a >= 13 && a <= 28) buckets['Gen Z (13-28)']++
+            else if (a >= 29 && a <= 44) buckets['Gen Y (29-44)']++
+            else if (a >= 45 && a <= 60) buckets['Gen (45-60)']++
+            else if (a >= 61 && a <= 80) buckets['BB (61-80)']++
             else if (a > 80) buckets['80+']++
         })
         setAgeData(Object.entries(buckets).map(([name, value]) => ({ name, value })))
