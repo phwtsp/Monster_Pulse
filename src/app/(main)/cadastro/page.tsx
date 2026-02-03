@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder, Gamepad2 } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder, Gamepad2, BriefcaseBusiness } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -20,6 +20,7 @@ const MOMENTS = [
     'Lanche',
     'Para Treinar',
     'Para Confraternizar',
+    'Trabalho',
     'Outros'
 ]
 
@@ -440,6 +441,7 @@ export default function CadastroPage() {
                             if (moment === 'Lanche') Icon = Sandwich;
                             if (moment === 'Para Treinar') Icon = Dumbbell;
                             if (moment === 'Para Confraternizar') Icon = Users;
+                            if (moment === 'Trabalho') Icon = BriefcaseBusiness;
 
                             return (
                                 <label key={moment} className={`${styles.checkboxBox} ${moments.includes(moment) ? styles.activeCheckbox : ''}`}>
