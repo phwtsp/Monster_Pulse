@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, ClipboardList, BarChart3, LogOut, Zap, User } from 'lucide-react'
+import { Home, ClipboardList, BarChart3, LogOut } from 'lucide-react'
 import styles from './Sidebar.module.css'
 import { clsx } from 'clsx'
 import { supabase } from '@/lib/supabaseClient'
@@ -62,9 +62,9 @@ export default function Sidebar() {
                 <div className={styles.logoBox}>
                     {/* Using <img> for simplicity with public folder, or Next Image */}
                     <img
-                        src="/monster-logo-horizontal.png"
-                        alt="Monster Energy"
-                        style={{ maxWidth: '180px', height: 'auto' }}
+                        src="/bgs/promo-logo.webp"
+                        alt="Promoção Monster BGS 2026"
+                        className={styles.logoImage}
                     />
                 </div>
 

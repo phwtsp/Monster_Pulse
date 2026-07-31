@@ -4,14 +4,18 @@
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    background-color: #0D1117;
+    min-height: 100vh;
+    background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.38)),
+        url('/bgs/bkg-1920.jpg') center / cover;
+    padding: 2rem 1rem;
 }
 
 .centeredContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2rem;
+    gap: 1.5rem;
     width: 100%;
     max-width: 400px;
 }
@@ -22,6 +26,7 @@
     align-items: center;
     text-align: center;
     color: #fff;
+    width: min(100%, 383px);
 }
 
 .iconCircle {
@@ -43,17 +48,18 @@
 }
 
 .brandSubtitle {
-    color: #888;
+    color: #e8e8e8;
     font-size: 0.9rem;
 }
 
 .card {
-    background-color: #0D1117;
-    /* Dark matching background */
+    background-color: rgba(10, 10, 10, 0.88);
     padding: 2rem;
     border-radius: 12px;
     width: 100%;
-    border: 1px solid #333;
+    border: 1px solid rgba(151, 215, 0, 0.35);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(8px);
 }
 
 .form {

@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './login.module.css'
-import { Loader2, Zap, Mail } from 'lucide-react'
+import { Loader2, Mail } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 export default function LoginPage() {
@@ -17,7 +17,7 @@ export default function LoginPage() {
     const router = useRouter()
 
     useEffect(() => {
-        document.title = "Monster Pesquisa | Login"
+        document.title = "Monster BGS 2026 | Login"
     }, [])
 
     const handleLogin = async (e: React.FormEvent) => {
@@ -69,14 +69,14 @@ export default function LoginPage() {
 
                 <div className={styles.logoHeader}>
                     <Image
-                        src="/monster-logo-full.png"
-                        alt="Monster Pulse"
-                        width={280}
-                        height={80}
+                        src="/bgs/logo-m-bgs.png"
+                        alt="Monster BGS 2026"
+                        width={383}
+                        height={77}
                         priority
                         style={{ objectFit: 'contain', marginBottom: '1rem' }}
                     />
-                    <p className={styles.brandSubtitle}>Event Data Collector</p>
+                    <p className={styles.brandSubtitle}>Pesquisa oficial • BGS 2026</p>
                 </div>
 
                 <div className={styles.card}>

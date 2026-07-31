@@ -2,27 +2,20 @@
 
 import styles from './page.module.css'
 import Link from 'next/link'
-import { ClipboardList, BarChart3, Zap } from 'lucide-react'
+import { ClipboardList, BarChart3 } from 'lucide-react'
 import { useEffect } from 'react'
 
 export default function Home() {
   useEffect(() => {
-    document.title = "Monster Pesquisa | Início"
+    document.title = "Monster BGS 2026 | Início"
   }, [])
   return (
     <div className={styles.landingContainer}>
-      <video
-        className={styles.bgVideo}
-        autoPlay
-        loop
-        muted
-        playsInline
-        src="https://www.callofduty.com/cod/cdn/bo7/BO7_IGS_CODHQ_BaseKA_1696x1056_02sk_CLEAN_Compressed.mp4"
-      />
+      <div className={styles.bgImage} aria-hidden="true" />
       <div className={styles.logoArea}>
         <img
-          src="/monster-logo-home.png"
-          alt="Monster Energy"
+          src="/bgs/logo-m-bgs.png"
+          alt="Monster BGS 2026"
           className={styles.logoImage}
         />
       </div>

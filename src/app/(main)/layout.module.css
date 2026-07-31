@@ -3,7 +3,9 @@
     width: calc(100% - 250px);
     min-height: 100vh;
     padding: 2rem;
-    background-color: var(--monster-black);
+    background:
+        linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)),
+        url('/bgs/bkg-1920.jpg') center / cover fixed;
 }
 
 @media (max-width: 768px) {

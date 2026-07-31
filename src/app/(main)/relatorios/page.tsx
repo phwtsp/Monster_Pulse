@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './relatorios.module.css'
-import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet, Gamepad2 } from 'lucide-react'
+import { Download, Users, BarChart2, Heart, Zap, FileSpreadsheet } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
 import * as XLSX from 'xlsx'
@@ -24,8 +24,6 @@ const CustomTooltip = ({ active, payload }: any) => {
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
     const [filteredData, setFilteredData] = useState<any[]>([])
-    const [filteredGamesData, setFilteredGamesData] = useState<any[]>([])
-    const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
     // Date Filter State
@@ -36,7 +34,6 @@ export default function RelatoriosPage() {
 
     // KPIs State
     const [total, setTotal] = useState(0)
-    const [totalPlayers, setTotalPlayers] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
     const [topFlavorCount, setTopFlavorCount] = useState(0)
@@ -46,13 +43,13 @@ export default function RelatoriosPage() {
 
 
     useEffect(() => {
-        document.title = "Monster Pesquisa | Relatório"
+        document.title = "Monster BGS 2026 | Relatório"
         fetchData()
     }, [])
 
     useEffect(() => {
         filterData()
-    }, [startDate, endDate, data, gamesDataRaw])
+    }, [startDate, endDate, data])
 
     const fetchData = async () => {
         setLoading(true)
@@ -92,24 +89,7 @@ export default function RelatoriosPage() {
             }
         }
 
-        // Fetch Game Sessions for Player Count
-        const { data: games, error: gamesError } = await supabase
-            .from('game_sessions')
-            .select('*')
-            .order('created_at', { ascending: false })
-
-        if (!gamesError && games) {
-            setLoading(false) // Wait to set loading until both are done
-            // Calculate total players directly here or store in state to filter?
-            // For now, let's calculate total un-filtered players or store them to filter.
-            // Ideally we should filter games by date too, but let's stick to total for now as requested or filter them if possible.
-            // Let's store games data to filter it too? The user didn't explicitly ask for date filtering on players, but it makes sense.
-            // For simplicity and to follow "Jogadores, somando a quantidade", let's sum all or filter by the same date range if possible.
-            // Let's add a separate state for gamesDataRaw
-            setGamesDataRaw(games)
-        } else {
-            setLoading(false)
-        }
+        setLoading(false)
     }
 
 
@@ -132,35 +112,12 @@ export default function RelatoriosPage() {
 
         setFilteredData(filtered)
 
-        // Filter Games Data
-        let filteredGames = gamesDataRaw
-        if (startDate && endDate) {
-            const start = new Date(startDate)
-            start.setHours(0, 0, 0, 0)
-            const end = new Date(endDate)
-            end.setHours(23, 59, 59, 999)
-
-            filteredGames = gamesDataRaw.filter(item => {
-                const itemDate = new Date(item.created_at)
-                return itemDate >= start && itemDate <= end
-            })
-        }
-
-        setFilteredGamesData(filteredGames)
-        calculateMetrics(filtered, filteredGames)
+        calculateMetrics(filtered)
     }
 
-    const calculateMetrics = (surveys: any[], games: any[] = []) => {
+    const calculateMetrics = (surveys: any[]) => {
         // 1. Total
         setTotal(surveys.length)
-
-        // 1.1 Total Players
-        let playersCount = 0
-        games.forEach(g => {
-            if (g.player_count === '1 Jogador') playersCount += 1
-            if (g.player_count === '2 Jogadores') playersCount += 2
-        })
-        setTotalPlayers(playersCount)
 
         // 2. Avg Age
         const totalAge = surveys.reduce((acc, curr) => acc + (curr.age || 0), 0)
@@ -373,14 +330,6 @@ export default function RelatoriosPage() {
                     <div className={styles.cardFooter}><strong>{topFlavorCount}</strong> votos contabilizados</div>
                 </div>
 
-                <div className={styles.card}>
-                    <div className={styles.cardHeader}>
-                        <span>Jogadores</span>
-                        <Gamepad2 size={20} color="#FFBB28" />
-                    </div>
-                    <div className={styles.bigNumber}>{totalPlayers}</div>
-                    <div className={styles.cardFooter}>jogadores registrados</div>
-                </div>
             </div>
 
             {/* Charts Row 1 */}
@@ -482,42 +431,6 @@ export default function RelatoriosPage() {
                 </div>
                 <div className={styles.tableFooter}>
                     E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} cadastros...
-                </div>
-            </div>
-
-            {/* Game Comments Table */}
-            <div className={styles.tableSection} style={{ marginTop: '2rem' }}>
-                <div className={styles.tableHeader}>
-                    <Gamepad2 size={18} color="#97d700" style={{ marginRight: 8 }} />
-                    Comentários
-                </div>
-                <div className={styles.tableWrapper}>
-                    <table className={styles.table}>
-                        <thead>
-                            <tr>
-                                <th style={{ width: '200px' }}>Data e Hora</th>
-                                <th>Comentário</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredGamesData.map((game) => (
-                                <tr key={game.id}>
-                                    <td>{new Date(game.created_at).toLocaleString('pt-BR')}</td>
-                                    <td style={{ whiteSpace: 'pre-wrap' }}>{game.comments || '-'}</td>
-                                </tr>
-                            ))}
-                            {filteredGamesData.length === 0 && (
-                                <tr>
-                                    <td colSpan={2} style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
-                                        Nenhum comentário registrado no período.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-                <div className={styles.tableFooter}>
-                    Total de {filteredGamesData.length} registros
                 </div>
             </div>
 
