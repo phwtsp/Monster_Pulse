@@ -2,10 +2,12 @@ import { createReadStream } from 'node:fs'
 import { stat } from 'node:fs/promises'
 import { createServer } from 'node:http'
 import { extname, relative, resolve } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import next from 'next'
 
-const projectRoot = fileURLToPath(new URL('.', import.meta.url))
+// Hostinger may launch the startup file from a different location than the
+// application directory. Next resolves the build from the process working
+// directory, so static files must use that same root as well.
+const projectRoot = process.cwd()
 const publicRoot = resolve(projectRoot, 'public')
 const nextStaticRoot = resolve(projectRoot, '.next/static')
 // Hostinger proxies traffic to the process, so bind on every interface.
