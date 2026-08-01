@@ -27,11 +27,27 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
                 height: '100vh',
                 width: '100vw',
                 display: 'flex',
+                flexDirection: 'column',
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: '#000'
+                gap: '1rem',
+                backgroundColor: '#000',
+                color: '#fff',
+                padding: '2rem',
+                textAlign: 'center'
             }}>
                 <Loader2 className="animate-spin" color="#97d700" size={48} />
+                <p style={{ margin: 0, color: '#aaa' }}>Carregando a pesquisa BGS 2026...</p>
+                <a
+                    href="/login"
+                    style={{
+                        color: '#97d700',
+                        fontWeight: 700,
+                        textDecoration: 'underline'
+                    }}
+                >
+                    Abrir tela de login
+                </a>
             </div>
         )
     }
