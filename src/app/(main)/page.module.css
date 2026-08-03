@@ -40,10 +40,11 @@
 }
 
 .logoImage {
-    max-width: 100%;
-    width: min(600px, 92vw);
-    /* Adjust based on preference, but responsive */
+    display: block;
+    max-width: 88vw;
+    width: 480px;
     height: auto;
+    object-fit: contain;
     filter: drop-shadow(0 8px 22px rgba(0, 0, 0, 0.5));
 }
 
