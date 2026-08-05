@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './relatorios.module.css'
-import { Download, Users, BarChart2, Heart, Zap, FileSpreadsheet } from 'lucide-react'
+import { Download, Users, BarChart2, Heart, Activity, Zap, FileSpreadsheet, Gamepad2 } from 'lucide-react'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import DateRangePicker from '@/components/DateRangePicker/DateRangePicker'
 import * as XLSX from 'xlsx'
@@ -24,6 +24,8 @@ const CustomTooltip = ({ active, payload }: any) => {
 export default function RelatoriosPage() {
     const [data, setData] = useState<any[]>([])
     const [filteredData, setFilteredData] = useState<any[]>([])
+    const [filteredGamesData, setFilteredGamesData] = useState<any[]>([])
+    const [gamesDataRaw, setGamesDataRaw] = useState<any[]>([])
     const [loading, setLoading] = useState(true)
 
     // Date Filter State
@@ -34,7 +36,10 @@ export default function RelatoriosPage() {
 
     // KPIs State
     const [total, setTotal] = useState(0)
+    const [totalPlayers, setTotalPlayers] = useState(0)
     const [avgAge, setAvgAge] = useState(0)
+    const [promotionAwareness, setPromotionAwareness] = useState(0)
+    const [avgActivationRating, setAvgActivationRating] = useState(0)
     const [topFlavor, setTopFlavor] = useState('-')
     const [topFlavorCount, setTopFlavorCount] = useState(0)
     const [genderData, setGenderData] = useState<any[]>([])
@@ -49,7 +54,7 @@ export default function RelatoriosPage() {
 
     useEffect(() => {
         filterData()
-    }, [startDate, endDate, data])
+    }, [startDate, endDate, data, gamesDataRaw])
 
     const fetchData = async () => {
         setLoading(true)
@@ -89,6 +94,17 @@ export default function RelatoriosPage() {
             }
         }
 
+        const { data: games, error: gamesError } = await supabase
+            .from('game_sessions')
+            .select('*')
+            .order('created_at', { ascending: false })
+
+        if (!gamesError && games) {
+            setGamesDataRaw(games)
+        } else if (gamesError) {
+            console.error('Erro ao carregar jogadas:', gamesError)
+        }
+
         setLoading(false)
     }
 
@@ -112,16 +128,45 @@ export default function RelatoriosPage() {
 
         setFilteredData(filtered)
 
-        calculateMetrics(filtered)
+        let filteredGames = gamesDataRaw
+        if (startDate && endDate) {
+            const start = new Date(startDate)
+            start.setHours(0, 0, 0, 0)
+            const end = new Date(endDate)
+            end.setHours(23, 59, 59, 999)
+
+            filteredGames = gamesDataRaw.filter(item => {
+                const itemDate = new Date(item.created_at)
+                return itemDate >= start && itemDate <= end
+            })
+        }
+
+        setFilteredGamesData(filteredGames)
+        calculateMetrics(filtered, filteredGames)
     }
 
-    const calculateMetrics = (surveys: any[]) => {
+    const calculateMetrics = (surveys: any[], games: any[] = []) => {
         // 1. Total
         setTotal(surveys.length)
+
+        // 1.1 Total Players
+        const playersCount = games.reduce((totalCount, game) => {
+            if (game.player_count === '2 Jogadores' || game.player_count === '2 Jogadores(s)') return totalCount + 2
+            return game.player_count === '1 Jogador' ? totalCount + 1 : totalCount
+        }, 0)
+        setTotalPlayers(playersCount)
 
         // 2. Avg Age
         const totalAge = surveys.reduce((acc, curr) => acc + (curr.age || 0), 0)
         setAvgAge(surveys.length ? Math.round(totalAge / surveys.length) : 0)
+
+        const knownPromotionAnswers = surveys.filter(s => typeof s.knows_promotion === 'boolean')
+        const knownPromotionCount = knownPromotionAnswers.filter(s => s.knows_promotion).length
+        setPromotionAwareness(knownPromotionAnswers.length ? Math.round((knownPromotionCount / knownPromotionAnswers.length) * 100) : 0)
+
+        const ratedSurveys = surveys.filter(s => Number.isFinite(Number(s.activation_rating)))
+        const totalRating = ratedSurveys.reduce((acc, curr) => acc + Number(curr.activation_rating), 0)
+        setAvgActivationRating(ratedSurveys.length ? Math.round((totalRating / ratedSurveys.length) * 10) / 10 : 0)
 
         // 3. Top Flavor & Pie Data
         const flavorCounts: Record<string, number> = {}
@@ -165,7 +210,7 @@ export default function RelatoriosPage() {
 
     const downloadCSV = () => {
         // Strict Format
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -183,10 +228,15 @@ export default function RelatoriosPage() {
                 ? `"${row.consumption_moments.join(', ')}"`
                 : `"${row.consumption_moments || ''}"`
 
+            const promotionComments = row.promotion_comments ? `"${String(row.promotion_comments).replaceAll('"', '""')}"` : ''
+
             return [
                 dateTime,
                 row.age,
                 row.gender,
+                row.knows_promotion === true ? 'Sim' : row.knows_promotion === false ? 'Não' : '',
+                row.activation_rating ?? '',
+                promotionComments,
                 flavors,
                 others,
                 moments
@@ -221,7 +271,7 @@ export default function RelatoriosPage() {
 
     const downloadExcel = () => {
         // Data prep
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -239,10 +289,15 @@ export default function RelatoriosPage() {
                 ? row.consumption_moments.join(', ')
                 : (row.consumption_moments || '')
 
+            const promotionComments = row.promotion_comments ? row.promotion_comments : ''
+
             return [
                 dateTime,
                 row.age,
                 row.gender,
+                row.knows_promotion === true ? 'Sim' : row.knows_promotion === false ? 'Não' : '',
+                row.activation_rating ?? '',
+                promotionComments,
                 flavors,
                 others,
                 moments
@@ -330,6 +385,32 @@ export default function RelatoriosPage() {
                     <div className={styles.cardFooter}><strong>{topFlavorCount}</strong> votos contabilizados</div>
                 </div>
 
+                <div className={styles.card}>
+                    <div className={styles.cardHeader}>
+                        <span>Conhece a Promoção</span>
+                        <Activity size={20} color="#00C49F" />
+                    </div>
+                    <div className={styles.bigNumber}>{promotionAwareness}<span className={styles.unit}>%</span></div>
+                    <div className={styles.cardFooter}>entre quem respondeu</div>
+                </div>
+
+                <div className={styles.card}>
+                    <div className={styles.cardHeader}>
+                        <span>Nota Média da Ativação</span>
+                        <Zap size={20} color="#FFBB28" />
+                    </div>
+                    <div className={styles.bigNumber}>{avgActivationRating}<span className={styles.unit}>/10</span></div>
+                </div>
+
+                <div className={styles.card}>
+                    <div className={styles.cardHeader}>
+                        <span>Jogadores</span>
+                        <Gamepad2 size={20} color="#FFBB28" />
+                    </div>
+                    <div className={styles.bigNumber}>{totalPlayers}</div>
+                    <div className={styles.cardFooter}>jogadores registrados</div>
+                </div>
+
             </div>
 
             {/* Charts Row 1 */}
@@ -410,6 +491,9 @@ export default function RelatoriosPage() {
                                 <th>Data e Hora</th>
                                 <th>Idade</th>
                                 <th>Sexo</th>
+                                <th>Promoção</th>
+                                <th>Nota</th>
+                                <th>Comentário</th>
                                 <th>Sabores</th>
                             </tr>
                         </thead>
@@ -419,6 +503,9 @@ export default function RelatoriosPage() {
                                     <td>{new Date(row.created_at).toLocaleString('pt-BR')}</td>
                                     <td>{row.age}</td>
                                     <td>{row.gender}</td>
+                                    <td>{row.knows_promotion === true ? 'Sim' : row.knows_promotion === false ? 'Não' : '-'}</td>
+                                    <td>{row.activation_rating ?? '-'}</td>
+                                    <td className={styles.truncate}>{row.promotion_comments || '-'}</td>
                                     <td className={styles.truncate}>
                                         {Array.isArray(row.preferences_monster)
                                             ? row.preferences_monster.join(', ')
@@ -432,6 +519,42 @@ export default function RelatoriosPage() {
                 <div className={styles.tableFooter}>
                     E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} cadastros...
                 </div>
+            </div>
+
+            {/* Dados das jogadas */}
+            <div className={styles.tableSection} style={{ marginTop: '2rem' }}>
+                <div className={styles.tableHeader}>
+                    <Gamepad2 size={18} color="#97d700" style={{ marginRight: 8 }} />
+                    Comentários das Jogadas
+                </div>
+                <div className={styles.tableWrapper}>
+                    <table className={styles.table}>
+                        <thead>
+                            <tr>
+                                <th style={{ width: '200px' }}>Data e Hora</th>
+                                <th>Jogadores</th>
+                                <th>Comentário</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {filteredGamesData.map(game => (
+                                <tr key={game.id}>
+                                    <td>{new Date(game.created_at).toLocaleString('pt-BR')}</td>
+                                    <td>{game.player_count || '-'}</td>
+                                    <td style={{ whiteSpace: 'pre-wrap' }}>{game.comments || '-'}</td>
+                                </tr>
+                            ))}
+                            {filteredGamesData.length === 0 && (
+                                <tr>
+                                    <td colSpan={3} style={{ textAlign: 'center', padding: '2rem', color: '#666' }}>
+                                        Nenhuma jogada registrada no período.
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+                <div className={styles.tableFooter}>Total de {filteredGamesData.length} registros</div>
             </div>
 
         </div>
