@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import styles from './cadastro.module.css'
-import { Loader2, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder, BriefcaseBusiness } from 'lucide-react'
+import { Loader2, Plus, User, Zap, Coffee, ShoppingBag, X, CheckCircle, Utensils, Sandwich, Dumbbell, Users, MoreHorizontal, Cylinder, Gamepad2, BriefcaseBusiness } from 'lucide-react'
 import * as gtag from '@/lib/gtag'
 
 // Icon mapping (simplified for demo) or just section headers
@@ -34,6 +34,9 @@ export default function CadastroPage() {
     // Form State
     const [age, setAge] = useState('')
     const [gender, setGender] = useState('')
+    const [knowsPromotion, setKnowsPromotion] = useState('')
+    const [activationRating, setActivationRating] = useState('')
+    const [promotionComments, setPromotionComments] = useState('')
 
     const [newBrand, setNewBrand] = useState('')
     const [otherBrandsList, setOtherBrandsList] = useState<string[]>([])
@@ -88,6 +91,9 @@ export default function CadastroPage() {
             user_email: userEmail,
             age: parseInt(age),
             gender,
+            knows_promotion: knowsPromotion === 'Sim',
+            activation_rating: parseInt(activationRating),
+            promotion_comments: promotionComments.trim() || null,
             preferences_monster: preferencesMonster,
             consumption_moments: moments,
             other_brands: otherBrandsString,
@@ -119,6 +125,9 @@ export default function CadastroPage() {
         // Reset form
         setAge('')
         setGender('')
+        setKnowsPromotion('')
+        setActivationRating('')
+        setPromotionComments('')
         setNewBrand('')
         setOtherBrandsList([])
         setPreferencesMonster([])
@@ -141,6 +150,48 @@ export default function CadastroPage() {
 
     const getImageUrl = (flavor: string) => {
         return `/latas/${flavor}.png`
+    }
+
+    // Registro rápido das jogadas da ativação, mantido separado da pesquisa principal.
+    const [showGameModal, setShowGameModal] = useState(false)
+    const [gamePlayerCount, setGamePlayerCount] = useState('1 Jogador')
+    const [gameComments, setGameComments] = useState('')
+    const [gameSubmitting, setGameSubmitting] = useState(false)
+    const [showGameSuccess, setShowGameSuccess] = useState(false)
+
+    const handleOpenGameModal = () => {
+        setGamePlayerCount('1 Jogador')
+        setGameComments('')
+        setShowGameModal(true)
+        setShowGameSuccess(false)
+    }
+
+    const handleCloseGameModal = () => {
+        setShowGameModal(false)
+        setShowGameSuccess(false)
+    }
+
+    const handleGameSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        setGameSubmitting(true)
+
+        const storedUser = localStorage.getItem('monster_user')
+        let userEmail = storedUser ? JSON.parse(storedUser).email : null
+        if (typeof userEmail === 'string') userEmail = userEmail.trim()
+
+        const { error } = await supabase.from('game_sessions').insert({
+            user_email: userEmail,
+            player_count: gamePlayerCount,
+            comments: gameComments.trim() || null,
+        })
+
+        if (error) {
+            console.error('Error saving game session:', error)
+            alert('Erro ao salvar jogada.')
+        } else {
+            setShowGameSuccess(true)
+        }
+        setGameSubmitting(false)
     }
 
     return (
@@ -214,6 +265,67 @@ export default function CadastroPage() {
                                 ))}
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                {/* Promoção e ativação */}
+                <section className={styles.section}>
+                    <div className={styles.sectionHeader}>
+                        <Zap size={20} color="#97d700" />
+                        <h2 className={styles.sectionTitle}>Promoção e Ativação</h2>
+                    </div>
+
+                    <div className={styles.inputGroup}>
+                        <label className={styles.label}>Você já conhece a promoção?</label>
+                        <div className={styles.radiosContainer}>
+                            {['Sim', 'Não'].map(option => (
+                                <label key={option} className={`${styles.radioBox} ${knowsPromotion === option ? styles.activeRadio : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="knowsPromotion"
+                                        value={option}
+                                        checked={knowsPromotion === option}
+                                        onChange={() => setKnowsPromotion(option)}
+                                        className={styles.hiddenRadio}
+                                        required
+                                    />
+                                    {option}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.inputGroup} style={{ marginTop: '1.5rem' }}>
+                        <label className={styles.label}>Que nota você dá para a ativação?</label>
+                        <div className={styles.ratingGrid}>
+                            {Array.from({ length: 11 }, (_, index) => String(index)).map(option => (
+                                <label key={option} className={`${styles.ratingBox} ${activationRating === option ? styles.activeRadio : ''}`}>
+                                    <input
+                                        type="radio"
+                                        name="activationRating"
+                                        value={option}
+                                        checked={activationRating === option}
+                                        onChange={() => setActivationRating(option)}
+                                        className={styles.hiddenRadio}
+                                        required
+                                    />
+                                    {option}
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className={styles.inputGroup} style={{ marginTop: '1.5rem' }}>
+                        <label className={styles.label} htmlFor="promotionComments">Comentários</label>
+                        <textarea
+                            id="promotionComments"
+                            placeholder="Escreva livremente seus comentários sobre a promoção..."
+                            value={promotionComments}
+                            onChange={e => setPromotionComments(e.target.value)}
+                            className={styles.input}
+                            rows={4}
+                            style={{ resize: 'vertical' }}
+                        />
                     </div>
                 </section>
 
@@ -418,6 +530,83 @@ export default function CadastroPage() {
                     {loading ? <Loader2 className="animate-spin" /> : 'SALVAR CADASTRO'}
                 </button>
             </form>
+
+            {/* Botão flutuante para registrar jogadas */}
+            <button
+                type="button"
+                className={styles.fabButton}
+                onClick={handleOpenGameModal}
+                title="Registrar Jogada"
+                aria-label="Registrar Jogada"
+            >
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                    <Gamepad2 size={28} />
+                    <Plus size={16} style={{ position: 'absolute', top: -5, right: -8, fontWeight: 'bold' }} />
+                </div>
+            </button>
+
+            {/* Modal de registro de jogadas */}
+            {showGameModal && (
+                <div className={styles.modalOverlay} style={{ zIndex: 11000 }}>
+                    <div className={styles.modalContent}>
+                        {!showGameSuccess ? (
+                            <>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                    <h2 className={styles.modalTitle} style={{ marginTop: 0 }}>Registrar Jogada</h2>
+                                    <button type="button" onClick={handleCloseGameModal} className={styles.closeButton} aria-label="Fechar">
+                                        <X size={24} color="#666" />
+                                    </button>
+                                </div>
+
+                                <form onSubmit={handleGameSubmit} className={styles.form} style={{ gap: '1rem' }}>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label} style={{ textAlign: 'left' }}>Quantidade de Jogadores</label>
+                                        <div className={styles.radiosContainer} style={{ justifyContent: 'center' }}>
+                                            {['1 Jogador', '2 Jogadores'].map(option => (
+                                                <label key={option} className={`${styles.radioBox} ${gamePlayerCount === option ? styles.activeRadio : ''}`}>
+                                                    <input
+                                                        type="radio"
+                                                        name="gamePlayerCount"
+                                                        value={option}
+                                                        checked={gamePlayerCount === option}
+                                                        onChange={() => setGamePlayerCount(option)}
+                                                        className={styles.hiddenRadio}
+                                                    />
+                                                    {option}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.label} style={{ textAlign: 'left' }} htmlFor="gameComments">Comentários</label>
+                                        <textarea
+                                            id="gameComments"
+                                            placeholder="Comentários do consumidor..."
+                                            value={gameComments}
+                                            onChange={e => setGameComments(e.target.value)}
+                                            className={styles.input}
+                                            rows={3}
+                                            style={{ resize: 'vertical' }}
+                                        />
+                                    </div>
+
+                                    <button type="submit" disabled={gameSubmitting} className={styles.modalButton} style={{ width: '100%', marginTop: '0.5rem' }}>
+                                        {gameSubmitting ? <Loader2 className="animate-spin" /> : 'ENVIAR'}
+                                    </button>
+                                </form>
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle size={64} color="#97d700" style={{ margin: '0 auto' }} />
+                                <h2 className={styles.modalTitle}>Sucesso!</h2>
+                                <p className={styles.modalText}>Jogada registrada com sucesso.</p>
+                                <button type="button" onClick={handleCloseGameModal} className={styles.modalButton}>OK</button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
 
         </div>
     )
