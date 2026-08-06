@@ -107,7 +107,7 @@ export default function LoginPage() {
                             </button>
 
                             <p className={styles.footerText}>
-                                Faça login com o e-mail previamente cadastrado. Para solicitar cadastro{' '}
+                                Faça login com o e-mail previamente autorizado. Para solicitar acesso{' '}
                                 <a
                                     href="http://wa.me/5514998229745"
                                     target="_blank"

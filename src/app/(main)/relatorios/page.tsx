@@ -210,7 +210,7 @@ export default function RelatoriosPage() {
 
     const downloadCSV = () => {
         // Strict Format
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora da Pesquisa', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -271,7 +271,7 @@ export default function RelatoriosPage() {
 
     const downloadExcel = () => {
         // Data prep
-        const header = ['Data e Hora do Cadastro', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
+        const header = ['Data e Hora da Pesquisa', 'Idade', 'Sexo', 'Conhece a Promoção', 'Nota da Ativação', 'Comentários da Promoção', 'Sabores Preferidos', 'Outros Energéticos Consumidos', 'Momentos de Consumo do Energético']
 
         const rows = filteredData.map(row => {
             const dateObj = new Date(row.created_at)
@@ -361,7 +361,7 @@ export default function RelatoriosPage() {
             <div className={styles.kpiGrid}>
                 <div className={styles.card}>
                     <div className={styles.cardHeader}>
-                        <span>Total de Cadastros</span>
+                        <span>Total de Pesquisas</span>
                         <Users size={20} color="#97d700" />
                     </div>
                     <div className={styles.bigNumber}>{total}</div>
@@ -517,7 +517,7 @@ export default function RelatoriosPage() {
                     </table>
                 </div>
                 <div className={styles.tableFooter}>
-                    E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} cadastros...
+                    E mais {filteredData.length > 10 ? filteredData.length - 10 : 0} pesquisas...
                 </div>
             </div>
 
