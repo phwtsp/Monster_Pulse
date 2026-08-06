@@ -23,7 +23,7 @@ export default function Home() {
       <div className={styles.actionButtons}>
         <Link href="/cadastro" className={styles.bigButton}>
           <ClipboardList size={24} />
-          CADASTRO
+          PESQUISA
         </Link>
         <Link href="/relatorios" className={styles.bigButton}>
           <BarChart3 size={24} />

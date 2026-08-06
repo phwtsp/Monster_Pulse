@@ -26,7 +26,7 @@ const MOMENTS = [
 
 export default function CadastroPage() {
     useEffect(() => {
-        document.title = "Monster BGS 2026 | Cadastro"
+        document.title = "Monster BGS 2026 | Pesquisa"
     }, [])
 
     const [loading, setLoading] = useState(false)
@@ -203,10 +203,10 @@ export default function CadastroPage() {
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>
                         <CheckCircle size={64} color="#97d700" style={{ margin: '0 auto' }} />
-                        <h2 className={styles.modalTitle}>Cadastro Salvo!</h2>
+                        <h2 className={styles.modalTitle}>Pesquisa Salva!</h2>
                         <p className={styles.modalText}>As informações foram registradas com sucesso.</p>
                         <button onClick={handleCloseModal} className={styles.modalButton}>
-                            OK, Novo Cadastro
+                            OK, Nova Pesquisa
                         </button>
                     </div>
                 </div>
@@ -223,7 +223,7 @@ export default function CadastroPage() {
                 </div>
             )}
 
-            <h1 className={styles.title}>Ficha de Cadastro</h1>
+            <h1 className={styles.title}>Ficha de Pesquisa</h1>
             <form onSubmit={handleSubmit} className={styles.form}>
 
                 {/* Section: Perfil */}
@@ -527,7 +527,7 @@ export default function CadastroPage() {
                 </section>
 
                 <button type="submit" disabled={loading} className={styles.submitButton}>
-                    {loading ? <Loader2 className="animate-spin" /> : 'SALVAR CADASTRO'}
+                    {loading ? <Loader2 className="animate-spin" /> : 'SALVAR PESQUISA'}
                 </button>
             </form>
 
