@@ -10,7 +10,7 @@ import * as gtag from '@/lib/gtag'
 const FLAVORS = {
     original: ['Monster Energy Green', 'Monster Energy Zero Sugar', 'Monster Absolutely Zero'],
     juice: ['Monster Mango Loco', 'Monster Pacific Punch', 'Monster Pipeline Punch', 'Monster Rio Punch Juice', 'Monster Khaotic'],
-    ultra: ['Monster Ultra Watermelon', 'Monster Ultra Paradise', 'Monster Ultra Violet', 'Monster Ultra Fiesta Mango', 'Monster Ultra Peachy Keen', 'Monster Ultra'],
+    ultra: ['Monster Ultra Watermelon', 'Monster Ultra Paradise', 'Monster Ultra Violet', 'Monster Ultra Fiesta Mango', 'Monster Ultra Peachy Keen', 'Monster Ultra Strawberry Dreams', 'Monster Ultra'],
     dragon: ['Monster Dragon Ice Tea Limão', 'Monster Dragon Ice Tea Pêssego'],
 }
 
